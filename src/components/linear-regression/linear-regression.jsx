@@ -10,15 +10,16 @@ import calculateLine from '../../helpers/linear-regression/calculateLine';
 import style from './linear-regression.module.sass';
 import createLine from '../../helpers/linear-regression/createLine';
 
+const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000, 10000];
+const LEARNING_RATE = [0.001, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];
 
 const LinearRegression = () => {
-
-    const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000, 10000];
 
     const [algorithmData, setAlgorithmData] = useState({
         loss_hist: [],
         gradient_hist: [],
         w1_hist: [],
+        eta: 0.001,
     });
     const allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta;
     const [iterations, setIterations] = useState(0);
@@ -31,8 +32,9 @@ const LinearRegression = () => {
             className={style['coordinates-plane']}>
                 <svg
                 className={'style.coordinates-plane-svg'}>
-                    <text x="25" y="25">W1: { algorithmData.w1 ? Number(algorithmData.w1).toFixed(8) : '-' }</text>
-                    <text x="150" y="25">W0: { algorithmData.w0 ? Number(algorithmData.w0).toFixed(8) : '-' }</text>
+                    <text x="0" y="25">W1: { algorithmData.w1 ? Number(algorithmData.w1).toFixed(8) : '-' }</text>
+                    <text x="0" y="50">W0: { algorithmData.w0 ? Number(algorithmData.w0).toFixed(8) : '-' }</text>
+                    <text x="0" y="75">eta: { Number(algorithmData.eta) }</text>
                 </svg>
             </section>
             <section className={style['control-plane']}>
@@ -56,7 +58,7 @@ const LinearRegression = () => {
                 >Get Random Data</button>
                 <button
                 style={
-                    algorithmData.eta ? {
+                    algorithmData.w1 && algorithmData.w0 ? {
                         background: 'aliceblue',
                         border: 'solid 1px #5a8da9'
                     } : {
@@ -72,10 +74,10 @@ const LinearRegression = () => {
                     .catch(err => console.log(err))
                 }}
                 >Initialize Random Coeffecients</button>
-                <div className={style['control-plane-epoch-container']}>
+                <div className={style['control-plane-coeff-container']}>
                     <label>Epochs: </label>
                     <select
-                    className={style['control-plane-epoch-selector']}
+                    className={style['control-plane-coeff-selector']}
                     name="epoch-selector" 
                     id="epoch-selector"
                     onChange={e => setAlgorithmData({
@@ -84,6 +86,19 @@ const LinearRegression = () => {
                     })}
                     >
                         { EPOCH_STEPS.map((step_size, index) => <option value={step_size} key={index}>{step_size}</option>) }
+                    </select>
+                </div>
+                <div className={style['control-plane-coeff-container']}>
+                    <label>Learning Rate: </label>
+                    <select
+                    className={style['control-plane-coeff-selector']}
+                    onChange={e => setAlgorithmData({
+                        ...algorithmData,
+                        eta: Number(e.target.value)
+                    })}
+                    value={ algorithmData.eta }
+                    >
+                        { LEARNING_RATE.map((eta, index) => <option value={eta} key={index}>{eta}</option>) }
                     </select>
                 </div>
                 <button
@@ -129,6 +144,8 @@ const LinearRegression = () => {
                             const { mergedData, svgEl, containerHeight } = initializeGraph(algorithmData);
                             scatterPlot(svgEl, mergedData, containerHeight, 500);
 
+                            const pauser = document.querySelector('#clear-value-button');
+
                             const recursiveFetches = async () => {
                                 algorithmDataClone = await executeAlgorithm(algorithmDataClone);
                                 iterationsClone += (algorithmData.epochs || 1);
@@ -137,9 +154,6 @@ const LinearRegression = () => {
         
                                 setIterations(iterationsClone);
                                 setAlgorithmData(algorithmDataClone);
-
-                                let lastSample = algorithmDataClone.loss_hist.pop();
-                                if ( lastSample < 30 ) return;
 
                                 return recursiveFetches();
                             }
@@ -161,6 +175,7 @@ const LinearRegression = () => {
                 </div>
 
                 <button
+                id='clear-value-button'
                 className={style['control-plane-clear-values']}
                 style={
                     Object.entries(algorithmData)?.length === 0 ? {
@@ -176,7 +191,6 @@ const LinearRegression = () => {
 
                     // setAlgorithmData({});
                     // setIterations(0);
-                    throw new Error()
                 }}>Clear Values</button>
             </section>
         </div>
