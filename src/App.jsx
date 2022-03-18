@@ -1,21 +1,22 @@
-import Spinner from './components/partials/spinner/spinner';
+import { useEffect, useState } from 'react';
+
+import Spinner, { CLOSING_INTERVAL } from './components/partials/spinner/spinner';
 
 import './App.css';
-import { useEffect, useState } from 'react';
+import Visualizer from './components/visualizer/visualizer';
 
 const App = () => {
 
-  const CLOSING_INTERVAL = 3000;
-  const [loader, setLoader] = useState(false);
-
+  const [loader, setLoader] = useState(true);
   useEffect(() => setTimeout(() => setLoader(false), CLOSING_INTERVAL), [])
 
   return (
     <div className="App">
-      <Spinner
-      loader={loader}
-      closingInterval={CLOSING_INTERVAL}
-      ></Spinner>
+      {
+        loader 
+        ? <Spinner></Spinner>
+        : <Visualizer></Visualizer>
+      }
     </div>
   );
 }
