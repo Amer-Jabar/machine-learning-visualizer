@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import Spinner, { CLOSING_INTERVAL } from './components/partials/spinner/spinner';
+import Visualizer from './components/visualizer/visualizer';
 
 import './App.css';
-import Visualizer from './components/visualizer/visualizer';
 
 const App = () => {
 
