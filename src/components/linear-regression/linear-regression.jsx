@@ -2,10 +2,13 @@ import { useState } from 'react';
 
 import getRandomCoeffs from '../../helpers/linear-regression/getRandomCoeffs';
 import getRandomData from '../../helpers/linear-regression/getRandomData';
-import runAlgorithm from '../../helpers/linear-regression/runAlgorithm';
 import executeAlgorithm from '../../helpers/linear-regression/executeAlgorithm';
+import initializeGraph from '../../helpers/linear-regression/initializeGraph';
+import scatterPlot from '../../helpers/linear-regression/scatterPlot';
+import calculateLine from '../../helpers/linear-regression/calculateLine';
 
 import style from './linear-regression.module.sass';
+import createLine from '../../helpers/linear-regression/createLine';
 
 const LinearRegression = () => {
 
@@ -15,10 +18,16 @@ const LinearRegression = () => {
     const [iterations, setIterations] = useState(0);
     const [algorithmExecutionIntervalId, setAlgorithmExecutionIntervalId] = useState(-1);
     const allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta;
+    const [svg, setSvg] = useState(null);
 
     return (
         <div className={style.container}>
-            <section className={style['coordinates-plane']}></section>
+            <section
+            id='coordinates-plane'
+            className={style['coordinates-plane']}>
+                <svg
+                className={'style.coordinates-plane-svg'}></svg>
+            </section>
             <section className={style['control-plane']}>
                 <button
                 style={
@@ -80,10 +89,20 @@ const LinearRegression = () => {
                     }
                 }
                 disabled={ !allDataExists }
-                onClick={
-                    () => executeAlgorithm(algorithmData, setAlgorithmData)
-                            .then(newAlgorithmData => setAlgorithmData(newAlgorithmData))
-                }
+                onClick={() => {
+                    executeAlgorithm(algorithmData, setAlgorithmData)
+                    .then(newAlgorithmData => setAlgorithmData(newAlgorithmData))
+                    .finally(() => {
+                        setIterations(iterations + 1);
+
+                        const { mergedData, svgEl, containerHeight } = initializeGraph(algorithmData);
+                        scatterPlot(svgEl, mergedData, containerHeight, 500);
+                        const { x1, x2, y1, y2 } = calculateLine(algorithmData);
+                        createLine(svgEl, { x1, x2, y1, y2 });
+
+                        setSvg(svgEl);
+                    });
+                }}
                 >Run Algorithm</button>
                 
                 <div className={style['control-plane-status']}>
@@ -96,11 +115,16 @@ const LinearRegression = () => {
                             
                             let algorithmDataClone = algorithmData;
                             let iterationsClone = iterations;
-                            
+
+                            const { mergedData, svgEl, containerHeight } = initializeGraph(algorithmData);
+                            scatterPlot(svgEl, mergedData, containerHeight, 500);
+    
                             let intervalId = setInterval( async () => {
                                 algorithmDataClone = await executeAlgorithm(algorithmDataClone);
-                                console.log(iterationsClone);
                                 iterationsClone += (algorithmData.epochs || 1);
+                                const { x1, x2, y1, y2 } = calculateLine(algorithmDataClone);
+                                createLine(svgEl, { x1, x2, y1, y2 });
+        
                                 setIterations(iterationsClone);
                                 setAlgorithmData(algorithmDataClone);
                             }, 100);
@@ -136,6 +160,8 @@ const LinearRegression = () => {
                 }
                 onClick={() => {
                     clearInterval(algorithmExecutionIntervalId);
+                    svg.selectAll('circle').remove()
+                    svg.selectAll('line').remove()
 
                     setAlgorithmData({});
                     setIterations(0);
