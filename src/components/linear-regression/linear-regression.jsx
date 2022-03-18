@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import getRandomData from '../../helpers/linear-regression/getRandomData';
 
 import style from './linear-regression.module.sass';
 
@@ -13,8 +14,24 @@ const LinearRegression = () => {
         <div className={style.container}>
             <section className={style['coordinates-plane']}></section>
             <section className={style['control-plane']}>
-                <button>Get Random Data</button>
-                <button>Initialized Random Coeffecients</button>
+                <button
+                onClick={() => {
+                    getRandomData()
+                    .then(randomData => setAlgorithmData({
+                        ...randomData
+                    }))
+                    .catch(err => console.log(err))
+                }}
+                >Get Random Data</button>
+                <button
+                onClick={() => {
+                    getRandomData()
+                    .then(randomData => setAlgorithmData({
+                        ...randomData
+                    }))
+                    .catch(err => console.log(err))
+                }}
+                >Initialize Random Coeffecients</button>
                 <div className={style['control-plane-epoch-container']}>
                     <label>Epochs: </label>
                     <select 
@@ -22,7 +39,7 @@ const LinearRegression = () => {
                     name="epoch-selector" 
                     id="epoch-selector"
                     onChange={e => setAlgorithmData({
-                        epochs: e.target.value
+                        epochs: Number(e.target.value)
                     })}
                     >
                         { EPOCH_STEPS.map((step_size, index) => <option value={step_size} key={index}>{step_size}</option>) }
