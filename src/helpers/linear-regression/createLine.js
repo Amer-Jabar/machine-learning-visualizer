@@ -14,7 +14,8 @@ const createLine = (svgEl, coordinates) => {
                 .attr('x2', (coordinates.x2 * widthScaler))
                 .attr('y1', containerHeight - (coordinates.y1 * heightScaler))
                 .attr('y2', containerHeight - (coordinates.y2 * heightScaler))
-                .style('stroke', 'red')
+                .style('stroke', '#5a8da9')
+                .style('stroke-width', '3px')
                 .transition()
                 .duration(250)
         else
