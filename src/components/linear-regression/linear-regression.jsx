@@ -6,12 +6,20 @@ import executeAlgorithm from '../../helpers/linear-regression/executeAlgorithm';
 import initializeGraph from '../../helpers/linear-regression/initializeGraph';
 import scatterPlot from '../../helpers/linear-regression/scatterPlot';
 import calculateLine from '../../helpers/linear-regression/calculateLine';
+import createLine from '../../helpers/linear-regression/createLine';
+import calculateError from '../../helpers/linear-regression/calculateError';
 
 import style from './linear-regression.module.sass';
-import createLine from '../../helpers/linear-regression/createLine';
 
 const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000, 10000];
 const LEARNING_RATE = [0.001, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];
+const ERROR_LIMITS = [1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001, 0.0000005, 0.0000001, 0.00000005, 0.00000001];
+const BASE_ALGORITHM_DATA = {
+    loss_hist: [],
+    gradient_hist: [],
+    w1_hist: [],
+    eta: 0.001,
+}
 
 const LinearRegression = () => {
 
@@ -25,19 +33,34 @@ const LinearRegression = () => {
     const [iterations, setIterations] = useState(0);
     const [svg, setSvg] = useState(null);
 
+    useEffect(() => {
+        setTimeout(() => {
+            const metrics = document.querySelector('#coordinates-metrics');
+            const { top } = document.querySelector('#control-plane').getClientRects()[0];
+    
+            metrics.style.top = `${top}px`;
+        }, 1000);
+    })
+
     return (
         <div className={style.container}>
+            <div
+            className={style['coordinates-metrics']}
+            id='coordinates-metrics'
+            >
+                <p>W1: { algorithmData.w1 ? Number(algorithmData.w1).toFixed(8) : '-' }</p>
+                <p>W0: { algorithmData.w0 ? Number(algorithmData.w0).toFixed(8) : '-' }</p>
+                <p>eta: { Number(algorithmData.eta) }</p>
+            </div>
             <section
             id='coordinates-plane'
             className={style['coordinates-plane']}>
-                <svg
-                className={'style.coordinates-plane-svg'}>
-                    <text x="0" y="25">W1: { algorithmData.w1 ? Number(algorithmData.w1).toFixed(8) : '-' }</text>
-                    <text x="0" y="50">W0: { algorithmData.w0 ? Number(algorithmData.w0).toFixed(8) : '-' }</text>
-                    <text x="0" y="75">eta: { Number(algorithmData.eta) }</text>
-                </svg>
+                <svg className={'style.coordinates-plane-svg'}></svg>
             </section>
-            <section className={style['control-plane']}>
+            <section
+            className={style['control-plane']}
+            id='control-plane'
+            >
                 <button
                 style={
                     algorithmData.x ? {
@@ -75,7 +98,7 @@ const LinearRegression = () => {
                 }}
                 >Initialize Random Coeffecients</button>
                 <div className={style['control-plane-coeff-container']}>
-                    <label>Epochs: </label>
+                    <label>Request Epochs: </label>
                     <select
                     className={style['control-plane-coeff-selector']}
                     name="epoch-selector" 
@@ -99,6 +122,19 @@ const LinearRegression = () => {
                     value={ algorithmData.eta }
                     >
                         { LEARNING_RATE.map((eta, index) => <option value={eta} key={index}>{eta}</option>) }
+                    </select>
+                </div>
+                <div className={style['control-plane-coeff-container']}>
+                    <label>Minimum Error: </label>
+                    <select
+                    className={style['control-plane-coeff-selector']}
+                    onChange={e => setAlgorithmData({
+                        ...algorithmData,
+                        minError: Number(e.target.value)
+                    })}
+                    value={ algorithmData.minError }
+                    >
+                        { ERROR_LIMITS.map((error, index) => <option value={error} key={index}>{error}</option>) }
                     </select>
                 </div>
                 <button
@@ -142,11 +178,10 @@ const LinearRegression = () => {
                             let iterationsClone = iterations;
 
                             const { mergedData, svgEl, containerHeight } = initializeGraph(algorithmData);
-                            scatterPlot(svgEl, mergedData, containerHeight, 500);
+                            scatterPlot(svgEl, mergedData, containerHeight, 0);
+                            setSvg(svgEl);
 
-                            const pauser = document.querySelector('#clear-value-button');
-
-                            const recursiveFetches = async () => {
+                            const recursiveFetches = async (minError) => {
                                 algorithmDataClone = await executeAlgorithm(algorithmDataClone);
                                 iterationsClone += (algorithmData.epochs || 1);
                                 const { x1, x2, y1, y2 } = calculateLine(algorithmDataClone);
@@ -155,10 +190,14 @@ const LinearRegression = () => {
                                 setIterations(iterationsClone);
                                 setAlgorithmData(algorithmDataClone);
 
-                                return recursiveFetches();
+                                
+                                const mustContinue = calculateError(algorithmDataClone) > minError;
+                                if ( !mustContinue ) return;
+
+                                return recursiveFetches(minError);
                             }
                             
-                            recursiveFetches();
+                            setTimeout(() => recursiveFetches(algorithmData.minError), 500);
                         }}>Start</button>
                     </div>
                     <div className={style['control-plane-metrics']}>
@@ -166,8 +205,8 @@ const LinearRegression = () => {
                         <div className={style['control-plane-metrics-component']}>
                             <label>Loss:</label>
                             <p>-{
-                                algorithmData.loss_hist.length > 0
-                                ? Number(algorithmData.loss_hist[algorithmData.loss_hist.length - 1]).toFixed(8)
+                                algorithmData?.loss_hist?.length > 0
+                                ? Number(algorithmData?.loss_hist[algorithmData?.loss_hist?.length - 1]).toFixed(8)
                                 : 'Nothing yet'
                             }</p>
                         </div>
@@ -186,11 +225,11 @@ const LinearRegression = () => {
                     }
                 }
                 onClick={() => {
-                    // svg.selectAll('circle').remove()
-                    // svg.selectAll('line').remove()
+                    svg.selectAll('circle').remove()
+                    svg.selectAll('line').remove()
 
-                    // setAlgorithmData({});
-                    // setIterations(0);
+                    setAlgorithmData(BASE_ALGORITHM_DATA);
+                    setIterations(0);
                 }}>Clear Values</button>
             </section>
         </div>

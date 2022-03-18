@@ -5,6 +5,23 @@
     button
         width: 100%
 
+.coordinates-metrics
+    width: 50%
+    height: max-content
+    position: absolute
+    right: 30%
+    display: flex
+    justify-content: space-between
+    opacity: 0
+    animation: coordinates-metrics-popup 0.5s 1s ease-in-out normal forwards
+
+    *
+        margin-inline: 0.5em
+        margin-block: 0em
+        padding: 1em
+        background: #f8eee0
+        font-family: 'Rubik'
+
 .coordinates-plane
     width: 70%
     height: 70%
@@ -13,14 +30,14 @@
     left: 1em
 
 .control-plane
-    width: 12em
-    height: 75vh
+    width: 15em
+    height: 80vh
     padding: 1em
     display: flex
     flex-direction: column
     position: absolute
     right: -50%
-    bottom: 5vh
+    bottom: 2vh
     border: none
     background: #fffff7a1
     box-shadow: -1px 0px 10px -7px black
@@ -105,6 +122,12 @@
     margin-top: auto !important
 
 
+@keyframes coordinates-metrics-popup
+    0%
+        opacity: 0
+
+    100%
+        opacity: 1
 
 @keyframes control-plane-popup
     0%
