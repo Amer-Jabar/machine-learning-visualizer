@@ -3,6 +3,7 @@ import { useState } from 'react';
 import getRandomCoeffs from '../../helpers/linear-regression/getRandomCoeffs';
 import getRandomData from '../../helpers/linear-regression/getRandomData';
 import runAlgorithm from '../../helpers/linear-regression/runAlgorithm';
+import executeAlgorithm from '../../helpers/linear-regression/executeAlgorithm';
 
 import style from './linear-regression.module.sass';
 
@@ -11,7 +12,9 @@ const LinearRegression = () => {
     const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000];
 
     const [algorithmData, setAlgorithmData] = useState({});
-    console.log(algorithmData?.loss_hist[algorithmData?.loss_hist?.length - 1])
+    const [iterations, setIterations] = useState(0);
+    const [algorithmExecutionIntervalId, setAlgorithmExecutionIntervalId] = useState(-1);
+    const allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta;
 
     return (
         <div className={style.container}>
@@ -76,31 +79,51 @@ const LinearRegression = () => {
                         background: ''
                     }
                 }
-                onClick={() => {
-                    let postPayload;
-                    if ( !algorithmData.loss_hist || !algorithmData.gradient_hist || !algorithmData.w1_hist )
-                        postPayload = {
-                            ...algorithmData,
-                            loss_hist: [],
-                            gradient_hist: [],
-                            w1_hist: [],            
-                        }
-                    else
-                        postPayload = {
-                            ...algorithmData,
-                            epochs: algorithmData.epochs || 1
-                        }
-
-                    runAlgorithm(postPayload)
-                    .then(result => setAlgorithmData({
-                            ...algorithmData,
-                            ...result
-                        })
-                    )
-                    .catch(err => console.log(err))
-                }}
+                disabled={ !allDataExists }
+                onClick={
+                    () => executeAlgorithm(algorithmData, setAlgorithmData)
+                            .then(newAlgorithmData => setAlgorithmData(newAlgorithmData))
+                }
                 >Run Algorithm</button>
-                <button>Show Results</button>
+                
+                <div className={style['control-plane-status']}>
+                    <div className={style['control-plane-status-button-group']}>
+                        <button
+                        disabled={ !allDataExists }
+                        onClick={() => {
+                            if ( algorithmExecutionIntervalId !== -1 )
+                            clearInterval(algorithmExecutionIntervalId);
+                            
+                            let algorithmDataClone = algorithmData;
+                            let iterationsClone = iterations;
+                            
+                            let intervalId = setInterval( async () => {
+                                algorithmDataClone = await executeAlgorithm(algorithmDataClone);
+                                console.log(iterationsClone);
+                                iterationsClone += (algorithmData.epochs || 1);
+                                setIterations(iterationsClone);
+                                setAlgorithmData(algorithmDataClone);
+                            }, 100);
+                            setAlgorithmExecutionIntervalId(intervalId);
+                            
+                        }}>Start</button>
+                        <button
+                        disabled={ !allDataExists || iterations === 0 }
+                        onClick={() => clearInterval(algorithmExecutionIntervalId)}>Pause</button>
+                    </div>
+                    <div className={style['control-plane-metrics']}>
+                        <div className={style['control-plane-metrics-component']}><label>Epoch:</label><p>+{ iterations }</p></div>
+                        <div className={style['control-plane-metrics-component']}>
+                            <label>Loss:</label>
+                            <p>-{
+                                algorithmData.loss_hist
+                                ? Number(algorithmData.loss_hist[algorithmData.loss_hist.length - 1]).toFixed(8)
+                                : 'Nothing yet'
+                            }</p>
+                        </div>
+                    </div>
+                </div>
+
                 <button
                 className={style['control-plane-clear-values']}
                 style={
@@ -111,7 +134,13 @@ const LinearRegression = () => {
                         background: ''
                     }
                 }
-                onClick={() => setAlgorithmData({})}>Clear Values</button>
+                onClick={() => {
+                    clearInterval(algorithmExecutionIntervalId);
+
+                    setAlgorithmData({});
+                    setIterations(0);
+                    setAlgorithmExecutionIntervalId(-1);
+                }}>Clear Values</button>
             </section>
         </div>
     )
