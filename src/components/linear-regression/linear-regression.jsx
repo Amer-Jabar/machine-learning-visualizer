@@ -9,6 +9,7 @@ import calculateLine from '../../helpers/linear-regression/calculateLine';
 import createLine from '../../helpers/linear-regression/createLine';
 import calculateError from '../../helpers/linear-regression/calculateError';
 import clearAllGraphs from '../../helpers/linear-regression/clearAllGraphs';
+import setMetricsBoard from '../../helpers/linear-regression/setMetricsBoard';
 
 import style from './linear-regression.module.sass';
 
@@ -36,13 +37,7 @@ const LinearRegression = () => {
     const [svg, setSvg] = useState(null);
 
     useEffect(() => {
-        setTimeout(() => {
-            const metrics = document.querySelector('#coordinates-metrics');
-            const { top, left } = document.querySelector('#control-plane').getClientRects()[0];
-    
-            metrics.style.top = `${top}px`;
-            metrics.style.left = `${left - 225}px`;
-        }, 1000);
+        setTimeout(() => setMetricsBoard(), 1000);
     }, []);
 
     return (
@@ -246,6 +241,7 @@ const LinearRegression = () => {
 
                     setAlgorithmData(BASE_ALGORITHM_DATA);
                     setIterations(0);
+                    setSvg(null);
                 }}>Clear Values</button>
             </section>
         </div>

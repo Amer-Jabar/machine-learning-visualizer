@@ -26,30 +26,54 @@ const initializeGraph = (algorithmData) => {
     const svgEl = select('svg')
         .attr('width', containerWidth + shifter)
         .attr('height', containerHeight);
-
-    svgEl.append("g")
-        .attr("transform", `translate(${shifter}, ${containerHeight - shifter})`)
-        .call(axisBottom(xScaler));
-
-    const g = svgEl.append("g")
-        .attr('class', '.left-axis')
+    
+    const gX = svgEl.append("g")
         .attr("transform", `translate(${shifter}, -${shifter})`)
         .call(axisLeft(yScaler));
 
-    const ticks = g.append('g')
+    const xTicks = gX.append('g')
         .call(
             axisLeft(yScaler)
             .tickSize(containerWidth)
         )
         .attr('transform', `translate(${containerWidth}, -${0})`)
 
-        ticks
-            .selectAll('line')
-            .attr('stroke', '#a8c6d7')
+    xTicks
+        .selectAll('line')
+        .attr('stroke', '#d1deeb')
 
-        ticks
-            .selectAll('text')
-            .remove()
+    xTicks
+        .selectAll('text')
+        .remove()
+
+    xTicks.select('.domain')
+        .attr('stroke', '#dae3eb')
+
+    const gY = svgEl.append("g")
+        .attr("transform", `translate(${shifter}, ${containerHeight - shifter})`)
+        .call(
+            axisBottom(xScaler)
+            .tickValues([10, 20, 30, 40, 50, 60, 70, 80, 90])
+            .tickFormat(d => d)
+        );
+
+    const yTicks = gY.append('g')
+        .call(
+            axisBottom(xScaler)
+            .tickSize(containerHeight - shifter)
+        )
+        .attr('transform', `translate(${0}, -${containerHeight - shifter})`)
+
+    yTicks
+        .selectAll('line')
+        .attr('stroke', '#d1deeb')
+
+    yTicks
+        .selectAll('text')
+        .remove()
+
+    yTicks.select('.domain')
+        .attr('stroke', '#dae3eb')
 
     return {
         mergedData, svgEl, containerWidth, containerHeight, widthScaler, heightScaler

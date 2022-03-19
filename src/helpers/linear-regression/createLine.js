@@ -7,8 +7,8 @@ const createLine = (svgEl, coordinates, algorithmDataClone, transitionCondition)
     const containerWidth = document.querySelector('#coordinates-plane').clientWidth;
     const containerHeight = document.querySelector('#coordinates-plane').clientHeight;
     
-    const widthScaler = containerWidth / Math.max(...algorithmDataClone.x);
-    const heightScaler = containerHeight / Math.max(...algorithmDataClone.y);
+    const widthScaler = (containerWidth - shifter) / Math.max(...algorithmDataClone.x);
+    const heightScaler = (containerHeight - shifter) / Math.max(...algorithmDataClone.y);
 
     if ( svgEl.select('#regression-line').size() === 0 ) {
         if ( transitionCondition )
