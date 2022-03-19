@@ -16,7 +16,9 @@ const WelcomeHeader = ({ show }) => {
         style={{
             opacity: showState ? 1 : 0
         }}
-        >Welcome To Machine Learning Visualizer</h1>
+        >
+            Welcome To <span>Machine Learning</span> Visualizer
+        </h1>
     )
 }
 

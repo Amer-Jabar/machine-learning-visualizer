@@ -38,6 +38,12 @@ const LinearRegression = () => {
 
     useEffect(() => {
         setTimeout(() => setMetricsBoard(), 1000);
+
+        return () => {
+            setAlgorithmData(null);
+            setIterations(null);
+            setSvg(null);
+        }
     }, []);
 
     return (

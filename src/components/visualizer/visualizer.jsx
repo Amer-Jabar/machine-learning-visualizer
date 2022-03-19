@@ -14,6 +14,11 @@ const Visualizer = () => {
     useEffect(() => {
         setAlgorithm('welcome-header');
         setCurrentElementId('welcome-header');
+
+        return () => {
+            setAlgorithm(null);
+            setCurrentElementId(null);
+        }
     }, []);
 
     const RenderedAlgorithm = () => {
@@ -33,7 +38,14 @@ const Visualizer = () => {
     }
 
     return (
-        <div className={style.visualizer}>
+        <div
+        className={style.visualizer}
+        style={ currentElementId === 'welcome-header' ? {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        } : {} }
+        >
             <Navbar
             setAlgorithm={setAlgorithm}
             currentAlgorithm={algorithm}
