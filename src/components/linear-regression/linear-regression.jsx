@@ -41,7 +41,10 @@ const LinearRegression = () => {
     }, []);
 
     return (
-        <div className={style.container}>
+        <div
+        className={style.container}
+        id='linear-regression'
+        >
             <div
             className={style['coordinates-metrics']}
             id='coordinates-metrics'

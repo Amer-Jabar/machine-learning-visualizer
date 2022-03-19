@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import WelcomeHeader from './welcome-header/welcome-header';
 import Navbar from './navbar/navbar';
 import LinearRegression from '../linear-regression/linear-regression.jsx';
 
@@ -8,10 +9,25 @@ import style from './visualizer.module.sass';
 const Visualizer = () => {
 
     const [algorithm, setAlgorithm] = useState(null);
+    const [currentElementId, setCurrentElementId] = useState('welcome-header');
+
+    useEffect(() => {
+        setAlgorithm('welcome-header');
+        setCurrentElementId('welcome-header');
+    }, []);
 
     const RenderedAlgorithm = () => {
-        if ( algorithm === 'linear-regression' )
+        if ( algorithm === 'linear-regression' ) {
+            setCurrentElementId('linear-regression');
             return <LinearRegression></LinearRegression>
+        } else if ( algorithm === 'welcome-header' ) {
+            setCurrentElementId('welcome-header');
+            return (
+                <WelcomeHeader
+                show={ algorithm === 'welcome-header' }
+                ></WelcomeHeader>
+            )
+        }
         
         return <></>
     }
@@ -21,6 +37,7 @@ const Visualizer = () => {
             <Navbar
             setAlgorithm={setAlgorithm}
             currentAlgorithm={algorithm}
+            currentElementId={currentElementId}
             ></Navbar>
             <RenderedAlgorithm></RenderedAlgorithm>
         </div>
