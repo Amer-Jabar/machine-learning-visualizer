@@ -1,6 +1,6 @@
 import style from './navbar.module.sass'
 
-const Navbar = ({ setAlgorithm }) => {
+const Navbar = ({ setAlgorithm, currentAlgorithm }) => {
 
     return (
         <nav className={style.navbar}>
@@ -9,6 +9,12 @@ const Navbar = ({ setAlgorithm }) => {
                 <option value="linear-regression">Linear Regression</option>
                 <option value="logistic-regression">Logistic Regression</option>
             </select>
+            <button
+            className={style['algorithm-reset-button']}
+            onClick={() => {
+                setAlgorithm('');
+                setTimeout(() => setAlgorithm(currentAlgorithm), 100);
+            }}>Reset</button>
         </nav>
     )
 }

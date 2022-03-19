@@ -54,6 +54,7 @@ const LinearRegression = () => {
                 <p>W1: { algorithmData.w1 ? Number(algorithmData.w1).toFixed(8) : '-' }</p>
                 <p>W0: { algorithmData.w0 ? Number(algorithmData.w0).toFixed(8) : '-' }</p>
                 <p>eta: { Number(algorithmData.eta) }</p>
+                <p>Error: { calculateError(algorithmData) === 2 ? '-' : Number(calculateError(algorithmData)).toFixed(8) }</p>
             </div>
             <section
             id='coordinates-plane'
@@ -77,13 +78,15 @@ const LinearRegression = () => {
                     getRandomData()
                     .then(randomData => {
                         if ( svg ) {
-                            clearAllGraphs(svg);
+                            clearAllGraphs(svg, {
+                                circle: false, line: true, g: true
+                            });
 
                             const { mergedData, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
-                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
+                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, true);
                         } else {
                             const { mergedData, svgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
-                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
+                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, false);
                             setSvg(svgEl);
                         }
 
@@ -171,7 +174,7 @@ const LinearRegression = () => {
                         setIterations(iterations + 1);
 
                         const { x1, x2, y1, y2 } = calculateLine(algorithmData);
-                        createLine(svg, { x1, x2, y1, y2 }, algorithmData);
+                        createLine(svg, { x1, x2, y1, y2 }, algorithmData, true);
                     });
                 }}
                 >Run Algorithm</button>
@@ -198,7 +201,7 @@ const LinearRegression = () => {
                                 algorithmDataClone = await executeAlgorithm(algorithmDataClone);
                                 iterationsClone += (algorithmData.epochs || 1);
                                 const { x1, x2, y1, y2 } = calculateLine(algorithmDataClone);
-                                createLine(svgEl, { x1, x2, y1, y2 }, algorithmDataClone);
+                                createLine(svg || svgEl, { x1, x2, y1, y2 }, algorithmDataClone, false);
         
                                 setIterations(iterationsClone);
                                 setAlgorithmData(algorithmDataClone);
@@ -237,7 +240,9 @@ const LinearRegression = () => {
                     }
                 }
                 onClick={() => {
-                    clearAllGraphs(svg)
+                    clearAllGraphs(svg, {
+                        circle: true, line: true, g: true
+                    });
 
                     setAlgorithmData(BASE_ALGORITHM_DATA);
                     setIterations(0);

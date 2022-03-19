@@ -20,6 +20,7 @@ const Visualizer = () => {
         <div className={style.visualizer}>
             <Navbar
             setAlgorithm={setAlgorithm}
+            currentAlgorithm={algorithm}
             ></Navbar>
             <RenderedAlgorithm></RenderedAlgorithm>
         </div>
