@@ -22,7 +22,7 @@ const BASE_ALGORITHM_DATA = {
     eta: 0.001,
 }
 
-const LinearRegression = ({ resetAlgorithm }) => {
+const LinearRegression = () => {
 
     const [algorithmData, setAlgorithmData] = useState({
         loss_hist: [],
@@ -237,12 +237,10 @@ const LinearRegression = ({ resetAlgorithm }) => {
                     }
                 }
                 onClick={() => {
-                    // clearAllGraphs(svg)
+                    clearAllGraphs(svg)
 
-                    // setAlgorithmData(BASE_ALGORITHM_DATA);
-                    // setIterations(0);
-
-                    resetAlgorithm();
+                    setAlgorithmData(BASE_ALGORITHM_DATA);
+                    setIterations(0);
                 }}>Clear Values</button>
             </section>
         </div>
