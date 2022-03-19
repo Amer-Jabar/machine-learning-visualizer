@@ -1,5 +1,7 @@
-const scatterPlot = (svgEl, mergedData, containerHeight, delay) => {
-    svgEl
+import { select } from "d3";
+
+const scatterPlot = (mergedData, containerHeight, delay) => {
+    select('svg')
         .selectAll('circle')
         .data(mergedData)
         .enter()
@@ -12,7 +14,7 @@ const scatterPlot = (svgEl, mergedData, containerHeight, delay) => {
         .style('transition-duration', '0.1s')
         .style('opacity', 0)
 
-    setTimeout(() => svgEl.selectAll('circle').style('opacity', 1), delay);
+    setTimeout(() => select('svg').selectAll('circle').style('opacity', 1), delay);
 }
 
 export default scatterPlot;

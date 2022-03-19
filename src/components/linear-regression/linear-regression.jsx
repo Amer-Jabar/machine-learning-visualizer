@@ -8,6 +8,7 @@ import scatterPlot from '../../helpers/linear-regression/scatterPlot';
 import calculateLine from '../../helpers/linear-regression/calculateLine';
 import createLine from '../../helpers/linear-regression/createLine';
 import calculateError from '../../helpers/linear-regression/calculateError';
+import clearAllGraphs from '../../helpers/linear-regression/clearAllGraphs';
 
 import style from './linear-regression.module.sass';
 
@@ -36,9 +37,10 @@ const LinearRegression = () => {
     useEffect(() => {
         setTimeout(() => {
             const metrics = document.querySelector('#coordinates-metrics');
-            const { top } = document.querySelector('#control-plane').getClientRects()[0];
+            const { top, left } = document.querySelector('#control-plane').getClientRects()[0];
     
             metrics.style.top = `${top}px`;
+            metrics.style.left = `${left - 175}px`;
         }, 1000);
     })
 
@@ -72,10 +74,23 @@ const LinearRegression = () => {
                 }
                 onClick={() => {
                     getRandomData()
-                    .then(randomData => setAlgorithmData({
-                        ...algorithmData,
-                        ...randomData
-                    }))
+                    .then(randomData => {
+                        if ( svg ) {
+                            clearAllGraphs(svg);
+
+                            const { mergedData, containerHeight } = initializeGraph(randomData);
+                            scatterPlot(mergedData, containerHeight, 500);
+                        } else {
+                            const { mergedData, svgEl, containerHeight } = initializeGraph(randomData);
+                            scatterPlot(mergedData, containerHeight, 500);
+                            setSvg(svgEl);
+                        }
+
+                        setAlgorithmData({
+                            ...algorithmData,
+                            ...randomData
+                        });
+                    })
                     .catch(err => console.log(err))
                 }}
                 >Get Random Data</button>
@@ -153,12 +168,8 @@ const LinearRegression = () => {
                     .finally(() => {
                         setIterations(iterations + 1);
 
-                        const { mergedData, svgEl, containerHeight } = initializeGraph(algorithmData);
-                        scatterPlot(svgEl, mergedData, containerHeight, 500);
                         const { x1, x2, y1, y2 } = calculateLine(algorithmData);
-                        createLine(svgEl, { x1, x2, y1, y2 });
-
-                        setSvg(svgEl);
+                        createLine(svg, { x1, x2, y1, y2 });
                     });
                 }}
                 >Run Algorithm</button>
@@ -178,7 +189,7 @@ const LinearRegression = () => {
                             let iterationsClone = iterations;
 
                             const { mergedData, svgEl, containerHeight } = initializeGraph(algorithmData);
-                            scatterPlot(svgEl, mergedData, containerHeight, 0);
+                            scatterPlot(mergedData, containerHeight, 0);
                             setSvg(svgEl);
 
                             const recursiveFetches = async (minError) => {
@@ -189,7 +200,6 @@ const LinearRegression = () => {
         
                                 setIterations(iterationsClone);
                                 setAlgorithmData(algorithmDataClone);
-
                                 
                                 const mustContinue = calculateError(algorithmDataClone) > minError;
                                 if ( !mustContinue ) return;
@@ -197,7 +207,7 @@ const LinearRegression = () => {
                                 return recursiveFetches(minError);
                             }
                             
-                            setTimeout(() => recursiveFetches(algorithmData.minError), 500);
+                            recursiveFetches(algorithmData.minError);
                         }}>Start</button>
                     </div>
                     <div className={style['control-plane-metrics']}>
@@ -225,8 +235,7 @@ const LinearRegression = () => {
                     }
                 }
                 onClick={() => {
-                    svg.selectAll('circle').remove()
-                    svg.selectAll('line').remove()
+                    clearAllGraphs(svg)
 
                     setAlgorithmData(BASE_ALGORITHM_DATA);
                     setIterations(0);
