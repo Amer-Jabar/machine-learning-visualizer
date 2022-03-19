@@ -22,15 +22,16 @@ const BASE_ALGORITHM_DATA = {
     eta: 0.001,
 }
 
-const LinearRegression = () => {
+const LinearRegression = ({ resetAlgorithm }) => {
 
     const [algorithmData, setAlgorithmData] = useState({
         loss_hist: [],
         gradient_hist: [],
         w1_hist: [],
-        eta: 0.001,
+        minError: 1,
+        eta: 0.0001,
     });
-    const allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta;
+    const allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta && algorithmData.w1 && algorithmData.w0;
     const [iterations, setIterations] = useState(0);
     const [svg, setSvg] = useState(null);
 
@@ -40,9 +41,9 @@ const LinearRegression = () => {
             const { top, left } = document.querySelector('#control-plane').getClientRects()[0];
     
             metrics.style.top = `${top}px`;
-            metrics.style.left = `${left - 175}px`;
+            metrics.style.left = `${left - 225}px`;
         }, 1000);
-    })
+    }, []);
 
     return (
         <div className={style.container}>
@@ -78,11 +79,11 @@ const LinearRegression = () => {
                         if ( svg ) {
                             clearAllGraphs(svg);
 
-                            const { mergedData, containerHeight } = initializeGraph(randomData);
-                            scatterPlot(mergedData, containerHeight, 500);
+                            const { mergedData, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
+                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
                         } else {
-                            const { mergedData, svgEl, containerHeight } = initializeGraph(randomData);
-                            scatterPlot(mergedData, containerHeight, 500);
+                            const { mergedData, svgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
+                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
                             setSvg(svgEl);
                         }
 
@@ -118,6 +119,7 @@ const LinearRegression = () => {
                     className={style['control-plane-coeff-selector']}
                     name="epoch-selector" 
                     id="epoch-selector"
+                    value={ algorithmData.epochs || 1 }
                     onChange={e => setAlgorithmData({
                         ...algorithmData,
                         epochs: Number(e.target.value)
@@ -147,7 +149,7 @@ const LinearRegression = () => {
                         ...algorithmData,
                         minError: Number(e.target.value)
                     })}
-                    value={ algorithmData.minError }
+                    value={ algorithmData.minError || 1 }
                     >
                         { ERROR_LIMITS.map((error, index) => <option value={error} key={index}>{error}</option>) }
                     </select>
@@ -169,7 +171,7 @@ const LinearRegression = () => {
                         setIterations(iterations + 1);
 
                         const { x1, x2, y1, y2 } = calculateLine(algorithmData);
-                        createLine(svg, { x1, x2, y1, y2 });
+                        createLine(svg, { x1, x2, y1, y2 }, algorithmData);
                     });
                 }}
                 >Run Algorithm</button>
@@ -188,15 +190,15 @@ const LinearRegression = () => {
                             let algorithmDataClone = algorithmData;
                             let iterationsClone = iterations;
 
-                            const { mergedData, svgEl, containerHeight } = initializeGraph(algorithmData);
-                            scatterPlot(mergedData, containerHeight, 0);
+                            const { mergedData, svgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(algorithmDataClone);
+                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
                             setSvg(svgEl);
 
                             const recursiveFetches = async (minError) => {
                                 algorithmDataClone = await executeAlgorithm(algorithmDataClone);
                                 iterationsClone += (algorithmData.epochs || 1);
                                 const { x1, x2, y1, y2 } = calculateLine(algorithmDataClone);
-                                createLine(svgEl, { x1, x2, y1, y2 });
+                                createLine(svgEl, { x1, x2, y1, y2 }, algorithmDataClone);
         
                                 setIterations(iterationsClone);
                                 setAlgorithmData(algorithmDataClone);
@@ -207,7 +209,7 @@ const LinearRegression = () => {
                                 return recursiveFetches(minError);
                             }
                             
-                            recursiveFetches(algorithmData.minError);
+                            recursiveFetches(algorithmData.minError || 1);
                         }}>Start</button>
                     </div>
                     <div className={style['control-plane-metrics']}>
@@ -235,10 +237,12 @@ const LinearRegression = () => {
                     }
                 }
                 onClick={() => {
-                    clearAllGraphs(svg)
+                    // clearAllGraphs(svg)
 
-                    setAlgorithmData(BASE_ALGORITHM_DATA);
-                    setIterations(0);
+                    // setAlgorithmData(BASE_ALGORITHM_DATA);
+                    // setIterations(0);
+
+                    resetAlgorithm();
                 }}>Clear Values</button>
             </section>
         </div>

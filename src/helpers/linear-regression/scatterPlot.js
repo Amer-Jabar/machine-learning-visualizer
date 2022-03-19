@@ -1,13 +1,15 @@
 import { select } from "d3";
 
-const scatterPlot = (mergedData, containerHeight, delay) => {
+import { shifter } from "./initializeGraph";
+
+const scatterPlot = (mergedData, containerHeight, widthScaler, heightScaler, delay) => {
     select('svg')
         .selectAll('circle')
         .data(mergedData)
         .enter()
         .append('circle')
-        .attr('cx', d => d.x)
-        .attr('cy', d => containerHeight - d.y)
+        .attr('cx', d => (d.x * widthScaler) + shifter)
+        .attr('cy', d => containerHeight - d.y * heightScaler - shifter)
         .attr('r', 3)
         .attr('fill', (d, i) => `hsl(205, 74%, ${100 - ((i + 25) / (mergedData.length + 25)) * 100}%)`)
         .style('transition-delay', (d, i) => `${i * 0.01}s`)

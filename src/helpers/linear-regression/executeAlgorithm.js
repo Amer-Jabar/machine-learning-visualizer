@@ -10,6 +10,7 @@ const executeAlgorithm = async (algorithmData) => {
         x_: algorithmData.x_,
         epochs: algorithmData.epochs || 1
     }
+    
     const result = await runAlgorithm(postPayload);
 
     return {
