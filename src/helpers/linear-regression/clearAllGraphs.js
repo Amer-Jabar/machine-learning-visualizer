@@ -1,12 +1,15 @@
-const clearAllGraphs = (svg, {
-    circle, line, g
+const clearAllGraphs = (coordinatePlaneSvg, gradientPlaneSvg, {
+    circle, line, g, gradientLine
 }) => {
     if ( circle )
-        svg.selectAll('circle').remove()
+        coordinatePlaneSvg.selectAll('circle').remove()
     if ( line )
-        svg.selectAll('line').remove()
+        coordinatePlaneSvg.selectAll('line').remove()
     if ( g )
-        svg.selectAll('g').remove()
+        coordinatePlaneSvg.selectAll('g').remove()
+
+    if ( gradientPlaneSvg && gradientLine )
+        gradientPlaneSvg.selectAll('line').remove();
 }
 
 export default clearAllGraphs;

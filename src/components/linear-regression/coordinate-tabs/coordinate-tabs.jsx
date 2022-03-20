@@ -10,9 +10,6 @@ const tabs = [{
 }, {
     src: 'images/linear-regression/linechart.png',
     alt: 'linechart icon'
-}, {
-    src: 'images/linear-regression/loss.png',
-    alt: 'loss icon'
 }]
 
 const CoordinatesTabs = ({ selectedTab, setSelectedTab }) => {

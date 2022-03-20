@@ -2,14 +2,28 @@ import { select, scaleLinear, axisBottom, axisLeft } from "d3";
 
 import { shifter } from "./initializeCoordinatePlaneGraph";
 
-const initializeGradientGraph = (algorithmData) => {
+const initializeGradientGraph = (algorithmData, {
+    alterMinHistoryX,
+    alterMaxHistoryX,
+    alterMaxHistoryY,
+}) => {
 
     const containerWidth = document.querySelector('#gradient-plane').clientWidth;
     const containerHeight = document.querySelector('#gradient-plane').clientHeight;    
 
-    const minHistoryX = Math.max(...algorithmData.w1_hist) * -1;
-    const maxHistoryX = Math.max(...algorithmData.w1_hist);
-    const maxHistoryY = Math.max(...algorithmData.loss_hist)
+    let minHistoryX;
+    let maxHistoryX;
+    let maxHistoryY;
+
+    if ( algorithmData ) {
+        minHistoryX = Math.max(...algorithmData.w1_hist) * -1;
+        maxHistoryX = Math.max(...algorithmData.w1_hist);
+        maxHistoryY = Math.max(...algorithmData.loss_hist);
+    } else {
+        minHistoryX = alterMinHistoryX;
+        maxHistoryX = alterMaxHistoryX;
+        maxHistoryY = alterMaxHistoryY;
+    }
 
     const xScaler = scaleLinear()
         .range([0, containerWidth])

@@ -1,4 +1,5 @@
 import { select } from "d3";
+
 import { shifter } from "./initializeCoordinatePlaneGraph";
 
 const scaleNumbers = (list, rMin, rMax, tMin, tMax) => {
@@ -21,11 +22,13 @@ const drawGradientLine = (gradientHistory, minHistoryX, maxHistoryX, maxHistoryY
 
     gradientHistory = scaleNumbers(gradientHistory, minHistoryX, maxHistoryX, 0, containerWidth);
 
-    select('#gradient-plane-svg')
+    const gradientPlaneSvg = select('#gradient-plane-svg');
+
+    gradientPlaneSvg
         .selectAll('.gradient-plane-svg-line')
         .remove();
     
-    select('#gradient-plane-svg')
+    gradientPlaneSvg
         .data(gradientHistory)
         .selectAll('.gradient-plane-svg-line')
         .data(gradientHistory)
@@ -38,6 +41,7 @@ const drawGradientLine = (gradientHistory, minHistoryX, maxHistoryX, maxHistoryY
         .attr('y2', d => (containerHeight - ((d.y2 / maxHistoryY) * containerHeight) - shifter))
         .attr('stroke', 'red')
 
+    return gradientPlaneSvg;
 }
 
 export default drawGradientLine;
