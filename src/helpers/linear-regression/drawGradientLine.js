@@ -35,7 +35,8 @@ const drawGradientLine = (gradientHistory, minHistoryX, maxHistoryX, maxHistoryY
         .attr('x2', d => d.x2 + shifter)
         .attr('y1', d => (containerHeight - ((d.y1 / maxHistoryY) * containerHeight) - shifter))
         .attr('y2', d => (containerHeight - ((d.y2 / maxHistoryY) * containerHeight) - shifter))
-        .attr('stroke', 'red')
+        .attr('stroke', 'rgb(90, 141, 169)')
+        .attr('stroke-width', '2px')
 
     return gradientPlaneSvg;
 }
