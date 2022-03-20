@@ -17,13 +17,11 @@ const LinearRegression = () => {
         minError: 1,
         eta: 0.0001,
     });
-    const [coordinatePlaneSvg, setCoordinatePlaneSvg] = useState(null);
     const [selectedTab, setSelectedTab] = useState(0);
 
     useEffect(() => {    
         return () => {
             setAlgorithmData({});
-            setCoordinatePlaneSvg(null);
             setSelectedTab(0);
         };
     }, []);
@@ -48,8 +46,6 @@ const LinearRegression = () => {
             ></GradientPlane>
             <ControlPlane
             setAlgorithmData={setAlgorithmData}
-            coordinatePlaneSvg={coordinatePlaneSvg}
-            setCoordinatePlaneSvg={setCoordinatePlaneSvg}
             ></ControlPlane>
         </div>
     )

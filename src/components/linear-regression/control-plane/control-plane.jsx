@@ -22,7 +22,7 @@ const BASE_ALGORITHM_DATA = {
     eta: 0.001,
 }
 
-const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, coordinatePlaneSvg, setCoordinatePlaneSvg }) => {
+const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
     
     const [algorithmData, setAlgorithmData] = useState({
         loss_hist: [],
@@ -31,14 +31,17 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, coordinatePla
         minError: 1,
         eta: 0.0001,
     });
-    const allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta && algorithmData.w1 && algorithmData.w0;
+    const [coordinatePlaneSvg, setCoordinatePlaneSvg] = useState(null);
     const [iterations, setIterations] = useState(0);
+    let allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta && algorithmData.w1 && algorithmData.w0;
 
     useEffect(() => {
+
         return () => {
             setAlgorithmData({});
-            allDataExists(null);
+            setCoordinatePlaneSvg(null);
             setIterations(0);
+            allDataExists = null;
         }
     }, []);
 
@@ -66,10 +69,12 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, coordinatePla
 
                         const { mergedData, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
                         scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, true);
+                        console.log('Here 1')
                     } else {
                         const { mergedData, coordinatePlaneSvg, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
                         scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, false);
                         setCoordinatePlaneSvg(coordinatePlaneSvg);
+                        console.log('Here 2')
                     }
 
                     setAlgorithmData({
@@ -189,16 +194,20 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, coordinatePla
                     onClick={() => {
                         let algorithmDataClone = algorithmData;
                         let iterationsClone = iterations;
+                        let coordinatePlaneSvgClone = coordinatePlaneSvg;
 
-                        const { mergedData, coordinatePlaneSvgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(algorithmDataClone);
-                        scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
-                        setCoordinatePlaneSvg(coordinatePlaneSvgEl);
+                        if ( !coordinatePlaneSvgClone ) {
+                            const { mergedData, coordinatePlaneSvgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(algorithmDataClone);
+                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
+                            setCoordinatePlaneSvg(coordinatePlaneSvgEl);
+                            coordinatePlaneSvgClone = coordinatePlaneSvgEl;
+                        }
 
                         const recursiveFetches = async (minError) => {
                             algorithmDataClone = await executeAlgorithm(algorithmDataClone);
                             iterationsClone += (algorithmData.epochs || 1);
                             const { x1, x2, y1, y2 } = calculateLine(algorithmDataClone);
-                            createLine(coordinatePlaneSvg || coordinatePlaneSvgEl, { x1, x2, y1, y2 }, algorithmDataClone, false);
+                            createLine(coordinatePlaneSvg || coordinatePlaneSvgClone, { x1, x2, y1, y2 }, algorithmDataClone, false);
 
                             setIterations(iterationsClone);
                             setAlgorithmData(algorithmDataClone);

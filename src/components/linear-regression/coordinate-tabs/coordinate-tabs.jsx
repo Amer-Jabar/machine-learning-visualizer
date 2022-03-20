@@ -30,6 +30,7 @@ const CoordinatesTabs = ({ selectedTab, setSelectedTab }) => {
         id='coordinate-tabs'>
             { tabs.map((tabIcon, index) => (
                 <img
+                key={index}
                 src={tabIcon.src}
                 alt={tabIcon.alt}
                 style={{
@@ -37,10 +38,7 @@ const CoordinatesTabs = ({ selectedTab, setSelectedTab }) => {
                     background: selectedTab === index ? 'white' : '',
                     opacity: selectedTab === index ? 1 : 0.5,
                 }}
-                onClick={() => {
-                    
-                    setSelectedTab(index);
-                }}
+                onClick={() => setSelectedTab(index)}
                 ></img>
             )) }
         </div>

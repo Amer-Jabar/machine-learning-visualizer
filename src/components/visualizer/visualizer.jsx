@@ -8,31 +8,31 @@ import style from './visualizer.module.sass';
 
 const Visualizer = () => {
 
-    const [algorithm, setAlgorithm] = useState(null);
+    const [algorithm, setAlgorithm] = useState('welcome-header');
     const [currentElementId, setCurrentElementId] = useState('welcome-header');
 
     useEffect(() => {
-        setAlgorithm('welcome-header');
-        setCurrentElementId('welcome-header');
+        let mounted = true;
 
-        return () => {
-            setAlgorithm(null);
-            setCurrentElementId(null);
+        if ( mounted ) {
+            setAlgorithm('welcome-header');
+            setCurrentElementId('welcome-header');
         }
+
+        return () => mounted = false;
     }, []);
+    useEffect(() => setCurrentElementId(algorithm), [algorithm]);
 
     const RenderedAlgorithm = () => {
-        if ( algorithm === 'linear-regression' ) {
-            setCurrentElementId('linear-regression');
-            return <LinearRegression></LinearRegression>
-        } else if ( algorithm === 'welcome-header' ) {
-            setCurrentElementId('welcome-header');
+        if ( algorithm === 'linear-regression' )
+            return <LinearRegression key={1}></LinearRegression>
+        else if ( algorithm === 'welcome-header' )
             return (
                 <WelcomeHeader
+                key={0}
                 show={ algorithm === 'welcome-header' }
                 ></WelcomeHeader>
             )
-        }
         
         return <></>
     }

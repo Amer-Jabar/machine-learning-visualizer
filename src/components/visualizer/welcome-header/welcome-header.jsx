@@ -6,8 +6,11 @@ const WelcomeHeader = ({ show }) => {
 
     const [showState, setShowState] = useState(false);
 
-    useEffect(() => setTimeout(() => setShowState(true), 500), [])
-    useEffect(() => {}, [showState])
+    useEffect(() => {
+        setTimeout(() => setShowState(show), 500);
+
+        return () => setShowState(false);
+    }, [])
 
     return (
         <h1

@@ -23,8 +23,7 @@ const initializeGraph = (algorithmData) => {
         .range([containerHeight, 0])
         .domain([0, max(mergedData, d => d.y)]);
 
-    const coordinatePlaneSvg = select('svg')
-        .attr('id', 'coordinates-plane-svg')
+    const coordinatePlaneSvg = select('#coordinates-plane-svg')
         .attr('width', containerWidth + shifter)
         .attr('height', containerHeight);
     

@@ -24,7 +24,7 @@ const Navbar = ({ setAlgorithm, currentAlgorithm, currentElementId }) => {
                 document.querySelector(`#${currentElementId}`).style.opacity = 0;
                 setTimeout(() => {
                     setAlgorithm('none');
-                    setAlgorithm(currentAlgorithm)
+                    setTimeout(() => setAlgorithm(currentAlgorithm), 100);
                 }, 500);
             }}>Reset</button>
         </nav>

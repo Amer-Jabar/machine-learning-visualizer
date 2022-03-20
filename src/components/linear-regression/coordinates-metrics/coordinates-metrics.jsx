@@ -7,9 +7,9 @@ import style from './coordinates-metrics.module.sass';
 
 const CoordinatesMetrics = ({ algorithmData }) => {
 
-    useEffect(() => setTimeout(() => {
-        setMetricsBoard();
-    }, 1000), []);
+    useEffect(() => {
+        setTimeout(() => setMetricsBoard(), 1000);
+    }, []);
 
     return (
         <div

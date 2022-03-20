@@ -13,6 +13,8 @@ const executeAlgorithm = async (algorithmData) => {
     
     const result = await runAlgorithm(postPayload);
 
+    console.log('1');
+
     return {
         ...algorithmData,
         ...result,
