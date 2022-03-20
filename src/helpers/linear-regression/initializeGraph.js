@@ -23,12 +23,12 @@ const initializeGraph = (algorithmData) => {
         .range([containerHeight, 0])
         .domain([0, max(mergedData, d => d.y)]);
 
-    const svgEl = select('svg')
+    const coordinatePlaneSvg = select('svg')
         .attr('id', 'coordinates-plane-svg')
         .attr('width', containerWidth + shifter)
         .attr('height', containerHeight);
     
-    const gX = svgEl.append("g")
+    const gX = coordinatePlaneSvg.append("g")
         .attr("transform", `translate(${shifter}, -${shifter})`)
         .call(axisLeft(yScaler));
 
@@ -50,7 +50,7 @@ const initializeGraph = (algorithmData) => {
     xTicks.select('.domain')
         .attr('stroke', '#dae3eb')
 
-    const gY = svgEl.append("g")
+    const gY = coordinatePlaneSvg.append("g")
         .attr("transform", `translate(${shifter}, ${containerHeight - shifter})`)
         .call(
             axisBottom(xScaler)
@@ -77,7 +77,7 @@ const initializeGraph = (algorithmData) => {
         .attr('stroke', '#dae3eb')
 
     return {
-        mergedData, svgEl, containerWidth, containerHeight, widthScaler, heightScaler
+        mergedData, coordinatePlaneSvg, containerWidth, containerHeight, widthScaler, heightScaler
     }
 }
 

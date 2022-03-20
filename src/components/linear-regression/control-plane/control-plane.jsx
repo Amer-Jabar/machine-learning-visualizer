@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import getRandomCoeffs from '../../../helpers/linear-regression/getRandomCoeffs';
 import getRandomData from '../../../helpers/linear-regression/getRandomData';
@@ -22,7 +22,7 @@ const BASE_ALGORITHM_DATA = {
     eta: 0.001,
 }
 
-const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, svg, setSvg }) => {
+const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, coordinatePlaneSvg, setCoordinatePlaneSvg }) => {
     
     const [algorithmData, setAlgorithmData] = useState({
         loss_hist: [],
@@ -33,6 +33,14 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, svg, setSvg }
     });
     const allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta && algorithmData.w1 && algorithmData.w0;
     const [iterations, setIterations] = useState(0);
+
+    useEffect(() => {
+        return () => {
+            setAlgorithmData({});
+            allDataExists(null);
+            setIterations(0);
+        }
+    }, []);
 
     return (
         <section
@@ -51,17 +59,17 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, svg, setSvg }
             onClick={() => {
                 getRandomData()
                 .then(randomData => {
-                    if ( svg ) {
-                        clearAllGraphs(svg, {
+                    if ( coordinatePlaneSvg ) {
+                        clearAllGraphs(coordinatePlaneSvg, {
                             circle: false, line: true, g: true
                         });
 
                         const { mergedData, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
                         scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, true);
                     } else {
-                        const { mergedData, svgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
+                        const { mergedData, coordinatePlaneSvg, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
                         scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, false);
-                        setSvg(svgEl);
+                        setCoordinatePlaneSvg(coordinatePlaneSvg);
                     }
 
                     setAlgorithmData({
@@ -163,7 +171,7 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, svg, setSvg }
                     setIterations(iterations + 1);
 
                     const { x1, x2, y1, y2 } = calculateLine(algorithmData);
-                    createLine(svg, { x1, x2, y1, y2 }, algorithmData, true);
+                    createLine(coordinatePlaneSvg, { x1, x2, y1, y2 }, algorithmData, true);
                 });
             }}
             >Run Algorithm</button>
@@ -182,15 +190,15 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, svg, setSvg }
                         let algorithmDataClone = algorithmData;
                         let iterationsClone = iterations;
 
-                        const { mergedData, svgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(algorithmDataClone);
+                        const { mergedData, coordinatePlaneSvgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(algorithmDataClone);
                         scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
-                        setSvg(svgEl);
+                        setCoordinatePlaneSvg(coordinatePlaneSvgEl);
 
                         const recursiveFetches = async (minError) => {
                             algorithmDataClone = await executeAlgorithm(algorithmDataClone);
                             iterationsClone += (algorithmData.epochs || 1);
                             const { x1, x2, y1, y2 } = calculateLine(algorithmDataClone);
-                            createLine(svg || svgEl, { x1, x2, y1, y2 }, algorithmDataClone, false);
+                            createLine(coordinatePlaneSvg || coordinatePlaneSvgEl, { x1, x2, y1, y2 }, algorithmDataClone, false);
 
                             setIterations(iterationsClone);
                             setAlgorithmData(algorithmDataClone);
@@ -230,14 +238,14 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData, svg, setSvg }
                 }
             }
             onClick={() => {
-                clearAllGraphs(svg, {
+                clearAllGraphs(coordinatePlaneSvg, {
                     circle: true, line: true, g: true
                 });
 
                 setAlgorithmData(BASE_ALGORITHM_DATA);
                 setParentsAlgorithmData(BASE_ALGORITHM_DATA);
                 setIterations(0);
-                setSvg(null);
+                setCoordinatePlaneSvg(null);
             }}>Clear Values</button>
         </section>
     )

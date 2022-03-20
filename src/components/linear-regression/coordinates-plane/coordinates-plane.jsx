@@ -1,11 +1,16 @@
 import style from './coordinates-plane.module.sass';
 
-const CoordinatesPlane = () => {
+const tabIndex = 0;
+
+const CoordinatesPlane = ({ selectedTabIndex }) => {
 
     return (
         <section
         id='coordinates-plane'
-        className={style['coordinates-plane']}>
+        className={style['coordinates-plane']}
+        style={{
+            opacity: selectedTabIndex === tabIndex ? 1 : 0
+        }}>
             <svg className={'style.coordinates-plane-svg'}></svg>
         </section>
     )

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import CoordinatesMetrics from './coordinates-metrics/coordinates-metrics';
+import CoordinatesTabs from './coordinate-tabs/coordinate-tabs';
 import CoordinatesPlane from './coordinates-plane/coordinates-plane';
 import ControlPlane from './control-plane/control-plane';
 
 import style from './linear-regression.module.sass';
+import GradientPlane from './gradient-plane/gradient-plane';
 
 const LinearRegression = () => {
 
@@ -15,22 +17,15 @@ const LinearRegression = () => {
         minError: 1,
         eta: 0.0001,
     });
-    const [svg, setSvg] = useState(null);
+    const [coordinatePlaneSvg, setCoordinatePlaneSvg] = useState(null);
+    const [selectedTab, setSelectedTab] = useState(0);
 
-    useEffect(() => {
-        
-        const setCoordinateTabs = () => {
-            const metrics = document.querySelector('#coordinates-metrics');
-            const tabsContainer = document.querySelector('#coordinate-tabs');
-
-            const { top, left } = metrics.getClientRects()[0];
-            tabsContainer.style.top = `${top}px`;
-            tabsContainer.style.left = `${left - tabsContainer.clientWidth - 50}px`;
-        }
-
-        setTimeout(() => setCoordinateTabs(), 2000);
-
-        return () => setSvg(null);
+    useEffect(() => {    
+        return () => {
+            setAlgorithmData({});
+            setCoordinatePlaneSvg(null);
+            setSelectedTab(0);
+        };
     }, []);
 
     return (
@@ -41,29 +36,20 @@ const LinearRegression = () => {
             <CoordinatesMetrics
             algorithmData={algorithmData}
             ></CoordinatesMetrics>
-            <div
-            style={{
-                position: 'absolute'
-            }}
-            id='coordinate-tabs'>
-                <img
-                src='images/linear-regression/scatterplot.png'
-                alt="scatterplot icon"
-                />
-                <img
-                src='images/linear-regression/linechart.png'
-                alt="linechart icon"
-                />
-                <img
-                src='images/linear-regression/loss.png'
-                alt="loss icon"
-                />
-            </div>
-            <CoordinatesPlane></CoordinatesPlane>
+            <CoordinatesTabs
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+            ></CoordinatesTabs>
+            <CoordinatesPlane
+            selectedTabIndex={selectedTab}
+            ></CoordinatesPlane>
+            <GradientPlane
+            selectedTabIndex={selectedTab}
+            ></GradientPlane>
             <ControlPlane
             setAlgorithmData={setAlgorithmData}
-            svg={svg}
-            setSvg={setSvg}
+            coordinatePlaneSvg={coordinatePlaneSvg}
+            setCoordinatePlaneSvg={setCoordinatePlaneSvg}
             ></ControlPlane>
         </div>
     )
