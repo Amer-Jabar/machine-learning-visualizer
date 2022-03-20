@@ -24,6 +24,7 @@ const initializeGraph = (algorithmData) => {
         .domain([0, max(mergedData, d => d.y)]);
 
     const svgEl = select('svg')
+        .attr('id', 'coordinates-plane-svg')
         .attr('width', containerWidth + shifter)
         .attr('height', containerHeight);
     

@@ -5,7 +5,7 @@ import { shifter } from "./initializeGraph";
 const scatterPlot = (mergedData, containerHeight, widthScaler, heightScaler, delay, rearrange) => {
     
     if ( rearrange ) {
-        select('svg')
+        select('#coordinates-plane-svg')
             .selectAll('circle')
             .data(mergedData)
             .transition(
@@ -16,7 +16,7 @@ const scatterPlot = (mergedData, containerHeight, widthScaler, heightScaler, del
             .attr('cy', d => containerHeight - d.y * heightScaler - shifter)
             
     } else {
-        select('svg')
+        select('#coordinates-plane-svg')
             .selectAll('circle')
             .data(mergedData)
             .enter()
@@ -29,7 +29,7 @@ const scatterPlot = (mergedData, containerHeight, widthScaler, heightScaler, del
             .style('transition-duration', '0.1s')
             .style('opacity', 0)
 
-        setTimeout(() => select('svg').selectAll('circle').style('opacity', 1), delay);
+        setTimeout(() => select('#coordinates-plane-svg').selectAll('circle').style('opacity', 1), delay);
     }
 
 }
