@@ -25,10 +25,6 @@ const drawGradientLine = (gradientHistory, minHistoryX, maxHistoryX, maxHistoryY
     const gradientPlaneSvg = select('#gradient-plane-svg');
 
     gradientPlaneSvg
-        .selectAll('.gradient-plane-svg-line')
-        .remove();
-    
-    gradientPlaneSvg
         .data(gradientHistory)
         .selectAll('.gradient-plane-svg-line')
         .data(gradientHistory)

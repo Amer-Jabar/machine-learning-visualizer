@@ -22,6 +22,7 @@ const BASE_ALGORITHM_DATA = {
     loss_hist: [],
     gradient_hist: [],
     w1_hist: [],
+    epochs: 1,
     eta: 0.001,
     w1: null,
     w0: null,
@@ -29,13 +30,7 @@ const BASE_ALGORITHM_DATA = {
 
 const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
     
-    const [algorithmData, setAlgorithmData] = useState({
-        loss_hist: [],
-        gradient_hist: [],
-        w1_hist: [],
-        minError: 1,
-        eta: 0.0001,
-    });
+    const [algorithmData, setAlgorithmData] = useState(BASE_ALGORITHM_DATA);
     const [gradientHistory, setGradientHistory] = useState([]);
     const [coordinatePlaneSvg, setCoordinatePlaneSvg] = useState(null);
     const [gradientPlaneSvg, setGradientPlaneSvg] = useState(null);
@@ -181,23 +176,24 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                 }
             }
             onClick={() => {
-                console.log(algorithmData.gradient_hist);
                 executeAlgorithm(algorithmData, setAlgorithmData)
                 .then(newAlgorithmData => {
                     const { x1, x2, y1, y2 } = calculateLine(newAlgorithmData);
                     createLine(coordinatePlaneSvg, { x1, x2, y1, y2 }, newAlgorithmData, true);
 
-                    const { minHistoryX, maxHistoryX, maxHistoryY } = initializeGradientGraph(newAlgorithmData, {
-                        alterMinHistoryX: null,
-                        alterMaxHistoryX: null,
-                        alterMaxHistoryY: null,
-                    });
-                    const newGradientDimension = calculateGradientLine(newAlgorithmData.loss_hist, newAlgorithmData.w1_hist);
-                    if ( newGradientDimension ) {
-                        const newGradientHistory = [...gradientHistory, newGradientDimension];
-                        const localGradientPlaneSvg = drawGradientLine(newGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
-                        setGradientHistory(newGradientHistory);
-                        setGradientPlaneSvg(localGradientPlaneSvg);
+                    if ( newAlgorithmData && newAlgorithmData?.epochs === 1 ) {
+                        const { minHistoryX, maxHistoryX, maxHistoryY } = initializeGradientGraph(newAlgorithmData, {
+                            alterMinHistoryX: null,
+                            alterMaxHistoryX: null,
+                            alterMaxHistoryY: null,
+                        });
+                        const newGradientDimension = calculateGradientLine(newAlgorithmData.loss_hist, newAlgorithmData.w1_hist);
+                        if ( newGradientDimension ) {
+                            const newGradientHistory = [...gradientHistory, newGradientDimension];
+                            const localGradientPlaneSvg = drawGradientLine(newGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
+                            setGradientHistory(newGradientHistory);
+                            setGradientPlaneSvg(localGradientPlaneSvg);
+                        }
                     }
 
                     setIterations(iterations + (algorithmData.epochs || 1));
