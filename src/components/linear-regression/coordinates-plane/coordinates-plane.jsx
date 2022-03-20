@@ -12,7 +12,7 @@ const CoordinatesPlane = ({ selectedTabIndex }) => {
             opacity: selectedTabIndex === tabIndex ? 1 : 0
         }}>
             <svg
-            className={'style.coordinates-plane-svg'}
+            className={style['coordinates-plane-svg']}
             id='coordinates-plane-svg'
             ></svg>
         </section>

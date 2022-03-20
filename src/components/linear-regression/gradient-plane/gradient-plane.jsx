@@ -5,13 +5,17 @@ const tabIndex = 1;
 const GradientPlane = ({ selectedTabIndex }) => {
 
     return (
-        <div
-        className={style['gradient-plane']}
+        <section
         id='gradient-plane'
+        className={style['gradient-plane']}
         style={{
             opacity: selectedTabIndex === tabIndex ? 1 : 0
-        }}
-        >This is gradient plane</div>
+        }}>
+            <svg
+            className={style['gradient-plane-svg']}
+            id='gradient-plane-svg'
+            ></svg>
+        </section>
     )
 }
 

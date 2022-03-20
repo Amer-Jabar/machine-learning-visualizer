@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import setCoordinateTabs from '../../../helpers/linear-regression/setCoordinateTabs';
 
@@ -12,10 +12,7 @@ const tabs = [{
     alt: 'linechart icon'
 }, {
     src: 'images/linear-regression/loss.png',
-    alt: 'loss icon',
-    style: {
-        filter: 'hue-rotate(-405deg)'
-    }
+    alt: 'loss icon'
 }]
 
 const CoordinatesTabs = ({ selectedTab, setSelectedTab }) => {

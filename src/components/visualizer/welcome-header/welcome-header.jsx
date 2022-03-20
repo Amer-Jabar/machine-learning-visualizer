@@ -10,7 +10,7 @@ const WelcomeHeader = ({ show }) => {
         setTimeout(() => setShowState(show), 500);
 
         return () => setShowState(false);
-    }, [])
+    }, [show])
 
     return (
         <h1

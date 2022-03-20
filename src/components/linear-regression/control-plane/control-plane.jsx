@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import getRandomCoeffs from '../../../helpers/linear-regression/getRandomCoeffs';
 import getRandomData from '../../../helpers/linear-regression/getRandomData';
 import executeAlgorithm from '../../../helpers/linear-regression/executeAlgorithm';
-import initializeGraph from '../../../helpers/linear-regression/initializeGraph';
+import initializeCoordinatePlaneGraph from '../../../helpers/linear-regression/initializeCoordinatePlaneGraph';
+import initializeGradientGraph from '../../../helpers/linear-regression/initializeGradientGraph';
 import scatterPlot from '../../../helpers/linear-regression/scatterPlot';
 import calculateLine from '../../../helpers/linear-regression/calculateLine';
 import createLine from '../../../helpers/linear-regression/createLine';
@@ -20,6 +21,19 @@ const BASE_ALGORITHM_DATA = {
     gradient_hist: [],
     w1_hist: [],
     eta: 0.001,
+}
+
+const calculateGradientLine = (lossHistory, w1History) => {
+    if ( lossHistory.length < 2 || w1History.length < 2 ) return;
+
+    const dimensions = {
+        x1: w1History[w1History.length - 2],
+        x2: w1History[w1History.length - 1],
+        y1: lossHistory[lossHistory.length - 1],
+        y2: lossHistory[lossHistory.length - 1],
+    }
+
+    return dimensions;
 }
 
 const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
@@ -67,14 +81,12 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                             circle: false, line: true, g: true
                         });
 
-                        const { mergedData, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
+                        const { mergedData, containerHeight, widthScaler, heightScaler } = initializeCoordinatePlaneGraph(randomData);
                         scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, true);
-                        console.log('Here 1')
                     } else {
-                        const { mergedData, coordinatePlaneSvg, containerHeight, widthScaler, heightScaler } = initializeGraph(randomData);
+                        const { mergedData, coordinatePlaneSvg, containerHeight, widthScaler, heightScaler } = initializeCoordinatePlaneGraph(randomData);
                         scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, false);
                         setCoordinatePlaneSvg(coordinatePlaneSvg);
-                        console.log('Here 2')
                     }
 
                     setAlgorithmData({
@@ -169,15 +181,15 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
             onClick={() => {
                 executeAlgorithm(algorithmData, setAlgorithmData)
                 .then(newAlgorithmData => {
+                    const { x1, x2, y1, y2 } = calculateLine(newAlgorithmData);
+                    createLine(coordinatePlaneSvg, { x1, x2, y1, y2 }, newAlgorithmData, true);
+                    // const grad = calculateGradientLine(newAlgorithmData.loss_hist, newAlgorithmData.w1_hist);
+                    initializeGradientGraph(newAlgorithmData);
+
+                    setIterations(iterations + 1);
                     setAlgorithmData(newAlgorithmData);
                     setParentsAlgorithmData(newAlgorithmData);
                 })
-                .finally(() => {
-                    setIterations(iterations + 1);
-
-                    const { x1, x2, y1, y2 } = calculateLine(algorithmData);
-                    createLine(coordinatePlaneSvg, { x1, x2, y1, y2 }, algorithmData, true);
-                });
             }}
             >Run Algorithm</button>
             
@@ -197,7 +209,7 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                         let coordinatePlaneSvgClone = coordinatePlaneSvg;
 
                         if ( !coordinatePlaneSvgClone ) {
-                            const { mergedData, coordinatePlaneSvgEl, containerHeight, widthScaler, heightScaler } = initializeGraph(algorithmDataClone);
+                            const { mergedData, coordinatePlaneSvgEl, containerHeight, widthScaler, heightScaler } = initializeCoordinatePlaneGraph(algorithmDataClone);
                             scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
                             setCoordinatePlaneSvg(coordinatePlaneSvgEl);
                             coordinatePlaneSvgClone = coordinatePlaneSvgEl;

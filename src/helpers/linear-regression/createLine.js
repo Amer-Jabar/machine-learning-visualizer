@@ -1,6 +1,6 @@
 import { transition } from "d3";
 
-import { shifter } from "./initializeGraph";
+import { shifter } from "./initializeCoordinatePlaneGraph";
 
 const createLine = (svgEl, coordinates, algorithmDataClone, transitionCondition) => {
 

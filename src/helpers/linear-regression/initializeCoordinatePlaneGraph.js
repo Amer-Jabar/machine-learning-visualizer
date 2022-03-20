@@ -1,8 +1,8 @@
 import { select, axisBottom, axisLeft, extent, max, scaleLinear, scaleTime } from 'd3';
 
-export const shifter = 30;
+export const shifter = 35;
 
-const initializeGraph = (algorithmData) => {
+const initializeCoordinatePlaneGraph = (algorithmData) => {
 
     const containerWidth = document.querySelector('#coordinates-plane').clientWidth;
     const containerHeight = document.querySelector('#coordinates-plane').clientHeight;
@@ -80,4 +80,4 @@ const initializeGraph = (algorithmData) => {
     }
 }
 
-export default initializeGraph;
+export default initializeCoordinatePlaneGraph;

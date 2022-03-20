@@ -1,6 +1,6 @@
 import { select, transition } from "d3";
 
-import { shifter } from "./initializeGraph";
+import { shifter } from "./initializeCoordinatePlaneGraph";
 
 const scatterPlot = (mergedData, containerHeight, widthScaler, heightScaler, delay, rearrange) => {
     

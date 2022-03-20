@@ -4,7 +4,7 @@ const setCoordinateTabs = () => {
 
     const { top, left } = metrics.getClientRects()[0];
     tabsContainer.style.top = `${top}px`;
-    tabsContainer.style.left = `${left - tabsContainer.clientWidth - 25}px`;
+    tabsContainer.style.left = `${left - tabsContainer.clientWidth - 50}px`;
     tabsContainer.style.opacity = 1;
 }
 
