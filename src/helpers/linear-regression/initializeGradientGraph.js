@@ -7,13 +7,17 @@ const initializeGradientGraph = (algorithmData) => {
     const containerWidth = document.querySelector('#gradient-plane').clientWidth;
     const containerHeight = document.querySelector('#gradient-plane').clientHeight;    
 
+    const minHistoryX = Math.max(...algorithmData.w1_hist) * -1;
+    const maxHistoryX = Math.max(...algorithmData.w1_hist);
+    const maxHistoryY = Math.max(...algorithmData.loss_hist)
+
     const xScaler = scaleLinear()
         .range([0, containerWidth])
-        .domain([Math.min(...algorithmData.w1_hist), Math.max(...algorithmData.w1_hist)])
+        .domain([minHistoryX, maxHistoryX])
 
     const yScaler = scaleLinear()
         .range([containerHeight, 0])
-        .domain([0, Math.max(...algorithmData.loss_hist)]);
+        .domain([0, maxHistoryY]);
 
     if ( select('#gradient-plane-x-axis').empty() || select('#gradient-plane-y-axis').empty() ) {
 
@@ -37,6 +41,10 @@ const initializeGradientGraph = (algorithmData) => {
 
         select('#gradient-plane-y-axis')
             .call(axisLeft(yScaler));
+    }
+
+    return {
+        minHistoryX, maxHistoryX, maxHistoryY
     }
 };
 
