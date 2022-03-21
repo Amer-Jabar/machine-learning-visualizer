@@ -16,7 +16,6 @@ const Navbar = ({ setAlgorithm, currentAlgorithm, currentElementId }) => {
             }}>
                 <option value="welcome-header">Select an Algorithm</option>
                 <option value="linear-regression">Linear Regression</option>
-                <option value="logistic-regression">Logistic Regression</option>
             </select>
             <button
             className={style['algorithm-reset-button']}
