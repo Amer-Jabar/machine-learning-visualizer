@@ -1,4 +1,4 @@
-import { select, axisBottom, axisLeft, extent, max, scaleLinear, scaleTime } from 'd3';
+import { select, axisBottom, axisLeft, scaleLinear, scaleTime } from 'd3';
 
 export const shifter = 35;
 

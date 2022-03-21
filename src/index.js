@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+export const API = 'http://127.0.0.1:8000';
+
 ReactDOM.render(
   <React.StrictMode>
     <App />

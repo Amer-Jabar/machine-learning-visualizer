@@ -1,8 +1,6 @@
 const clearAllGraphs = (coordinatePlaneSvg, gradientPlaneSvg, {
     circle, line, g, gradientLine
 }) => {
-
-    console.log({ coordinatePlaneSvg, gradientPlaneSvg });
     if ( coordinatePlaneSvg && circle )
         coordinatePlaneSvg.selectAll('circle').remove()
     if ( coordinatePlaneSvg && line )

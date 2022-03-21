@@ -8,7 +8,9 @@ import './App.css';
 const App = () => {
 
   const [loader, setLoader] = useState(true);
-  useEffect(() => setTimeout(() => setLoader(false), CLOSING_INTERVAL), [])
+  useEffect(() => {
+    setTimeout(() => setLoader(false), CLOSING_INTERVAL);
+  }, [])
 
   return (
     <div className="App">
