@@ -181,20 +181,28 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                     const { x1, x2, y1, y2 } = calculateLine(newAlgorithmData);
                     createLine(coordinatePlaneSvg, { x1, x2, y1, y2 }, newAlgorithmData, true);
 
-                    if ( newAlgorithmData && newAlgorithmData?.epochs === 1 ) {
                         const { minHistoryX, maxHistoryX, maxHistoryY } = initializeGradientGraph(newAlgorithmData, {
                             alterMinHistoryX: null,
                             alterMaxHistoryX: null,
                             alterMaxHistoryY: null,
                         });
-                        const newGradientDimension = calculateGradientLine(newAlgorithmData.loss_hist, newAlgorithmData.w1_hist);
+                        const newGradientDimension = calculateGradientLine(
+                            newAlgorithmData.epochs, 
+                            newAlgorithmData.loss_hist, 
+                            newAlgorithmData.w1_hist
+                        );
+
                         if ( newGradientDimension ) {
-                            const newGradientHistory = [...gradientHistory, newGradientDimension];
+                            const newGradientHistory = newGradientDimension instanceof Object && !Array.isArray(newGradientDimension)
+                            ? [...gradientHistory, newGradientDimension]
+                            : Array.isArray(newGradientDimension)
+                            ? [...gradientHistory, ...newGradientDimension]
+                            : [...gradientHistory]
+
                             const localGradientPlaneSvg = drawGradientLine(newGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
                             setGradientHistory(newGradientHistory);
                             setGradientPlaneSvg(localGradientPlaneSvg);
                         }
-                    }
 
                     setIterations(iterations + (algorithmData.epochs || 1));
                     setAlgorithmData(newAlgorithmData);
@@ -241,13 +249,23 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                                 alterMaxHistoryX: null,
                                 alterMaxHistoryY: null,
                             });
-                            const newGradientDimension = calculateGradientLine(algorithmDataClone.loss_hist, algorithmDataClone.w1_hist);
+                            const newGradientDimension = calculateGradientLine(
+                                algorithmDataClone.epochs,
+                                algorithmDataClone.loss_hist,
+                                algorithmDataClone.w1_hist
+                            );
+                            
                             if ( newGradientDimension ) {
-                                localGradientHistory = [...localGradientHistory, newGradientDimension];
-                                drawGradientLine(localGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
+                                localGradientHistory = newGradientDimension instanceof Object && !Array.isArray(newGradientDimension)
+                                ? [...localGradientHistory, newGradientDimension]
+                                : Array.isArray(newGradientDimension)
+                                ? [...localGradientHistory, ...newGradientDimension]
+                                : [...localGradientHistory]
+    
                                 const localGradientPlaneSvg = drawGradientLine(localGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
+                                setGradientHistory(localGradientHistory);
                                 setGradientPlaneSvg(localGradientPlaneSvg);
-                            }
+                            }    
 
                             const mustContinue = calculateError(algorithmDataClone) > minError;
                             if ( !mustContinue ) return;

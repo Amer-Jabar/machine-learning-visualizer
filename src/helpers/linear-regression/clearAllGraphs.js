@@ -1,11 +1,11 @@
 const clearAllGraphs = (coordinatePlaneSvg, gradientPlaneSvg, {
     circle, line, g, gradientLine
 }) => {
-    if ( circle )
+    if ( coordinatePlaneSvg && circle )
         coordinatePlaneSvg.selectAll('circle').remove()
-    if ( line )
+    if ( coordinatePlaneSvg && line )
         coordinatePlaneSvg.selectAll('line').remove()
-    if ( g )
+    if ( coordinatePlaneSvg && g )
         coordinatePlaneSvg.selectAll('g').remove()
 
     if ( gradientPlaneSvg && gradientLine )
