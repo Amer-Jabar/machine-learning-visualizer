@@ -1,6 +1,7 @@
 import { transition } from "d3";
 
 import { shifter } from "./initializeCoordinatePlaneGraph";
+import { circleDiameter } from "./scatterPlot";
 
 const createLine = (svgEl, coordinates, algorithmDataClone, transitionCondition) => {
 
@@ -20,9 +21,9 @@ const createLine = (svgEl, coordinates, algorithmDataClone, transitionCondition)
                     .duration(250)
                 )
                 .attr('x1', Number(coordinates.x1 * widthScaler).toFixed(5))
-                .attr('x2', Number(coordinates.x2 * widthScaler).toFixed(5))
-                .attr('y1', Number(containerHeight - (coordinates.y1 * heightScaler) - shifter).toFixed(5))
-                .attr('y2', Number(containerHeight - (coordinates.y2 * heightScaler) - shifter).toFixed(5))
+                .attr('x2', Number(coordinates.x2 * widthScaler - shifter).toFixed(5))
+                .attr('y1', Number(containerHeight - (coordinates.y1 * heightScaler) - shifter + (circleDiameter * 2)).toFixed(5))
+                .attr('y2', Number(containerHeight - (coordinates.y2 * heightScaler) + circleDiameter).toFixed(5))
                 .attr('transform', `translate(${shifter}, 0)`)
                 .style('stroke', '#5a8da9')
                 .style('stroke-width', '3px')
@@ -31,9 +32,9 @@ const createLine = (svgEl, coordinates, algorithmDataClone, transitionCondition)
                 .append('line')
                 .attr('id', 'regression-line')
                 .attr('x1', Number(coordinates.x1 * widthScaler).toFixed(5))
-                .attr('x2', Number(coordinates.x2 * widthScaler).toFixed(5))
-                .attr('y1', Number(containerHeight - (coordinates.y1 * heightScaler) - shifter).toFixed(5))
-                .attr('y2', Number(containerHeight - (coordinates.y2 * heightScaler) - shifter).toFixed(5))
+                .attr('x2', Number(coordinates.x2 * widthScaler - shifter).toFixed(5))
+                .attr('y1', Number(containerHeight - (coordinates.y1 * heightScaler) - shifter + (circleDiameter * 2)).toFixed(5))
+                .attr('y2', Number(containerHeight - (coordinates.y2 * heightScaler) + circleDiameter).toFixed(5))
                 .attr('transform', `translate(${shifter}, 0)`)
                 .style('stroke', '#5a8da9')
                 .style('stroke-width', '3px')
@@ -46,16 +47,16 @@ const createLine = (svgEl, coordinates, algorithmDataClone, transitionCondition)
                     .duration(250)
                 )
                 .attr('x1', Number(coordinates.x1 * widthScaler).toFixed(5))
-                .attr('x2', Number(coordinates.x2 * widthScaler).toFixed(5))
-                .attr('y1', Number(containerHeight - (coordinates.y1 * heightScaler) - shifter).toFixed(5))
-                .attr('y2', Number(containerHeight - (coordinates.y2 * heightScaler) - shifter).toFixed(5))
+                .attr('x2', Number(coordinates.x2 * widthScaler - shifter).toFixed(5))
+                .attr('y1', Number(containerHeight - (coordinates.y1 * heightScaler) - shifter + (circleDiameter * 2)).toFixed(5))
+                .attr('y2', Number(containerHeight - (coordinates.y2 * heightScaler) + circleDiameter).toFixed(5))
         else
             svgEl
                 .select('#regression-line')
                 .attr('x1', Number(coordinates.x1 * widthScaler).toFixed(5))
-                .attr('x2', Number(coordinates.x2 * widthScaler).toFixed(5))
-                .attr('y1', Number(containerHeight - (coordinates.y1 * heightScaler) - shifter).toFixed(5))
-                .attr('y2', Number(containerHeight - (coordinates.y2 * heightScaler) - shifter).toFixed(5))
+                .attr('x2', Number(coordinates.x2 * widthScaler - shifter).toFixed(5))
+                .attr('y1', Number(containerHeight - (coordinates.y1 * heightScaler) - shifter + (circleDiameter * 2)).toFixed(5))
+                .attr('y2', Number(containerHeight - (coordinates.y2 * heightScaler) + circleDiameter).toFixed(5))
     }
 }
 

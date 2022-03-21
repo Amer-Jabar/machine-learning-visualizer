@@ -71,12 +71,27 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                         setIterations(0);
                         setParentsAlgorithmData(BASE_ALGORITHM_DATA);
         
-                        const { mergedData, containerHeight, widthScaler, heightScaler } = initializeCoordinatePlaneGraph(randomData);
-                        scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, true);
+                        const {
+                            mergedData,
+                            containerWidth,
+                            containerHeight,
+                            minScaleX,
+                            maxScaleX,
+                            maxScaleY
+                        } = initializeCoordinatePlaneGraph(randomData);
+                        scatterPlot(mergedData, containerWidth, containerHeight, minScaleX, maxScaleX, maxScaleY, 0, true);
                     } else {
-                        const { mergedData, coordinatePlaneSvg, containerHeight, widthScaler, heightScaler } = initializeCoordinatePlaneGraph(randomData);
-                        scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0, false);
-                        setCoordinatePlaneSvg(coordinatePlaneSvg);
+                        const {
+                            mergedData,
+                            coordinatePlaneSvg: localCoordinatePlaneSvg,
+                            containerWidth,
+                            containerHeight,
+                            minScaleX,
+                            maxScaleX,
+                            maxScaleY
+                        } = initializeCoordinatePlaneGraph(randomData);
+                        scatterPlot(mergedData, containerWidth, containerHeight, minScaleX, maxScaleX, maxScaleY, 0, false);
+                        setCoordinatePlaneSvg(localCoordinatePlaneSvg);
                     }
 
                     initializeGradientGraph(null, {

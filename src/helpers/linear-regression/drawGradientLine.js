@@ -2,7 +2,9 @@ import { select } from "d3";
 
 import { shifter } from "./initializeCoordinatePlaneGraph";
 
-const scaleNumbers = (list, rMin, rMax, tMin, tMax) => {
+export const scaleNumber = (x, xMin, xMax, a, b) => ((b - a) * (x - xMin) / (xMax - xMin)) + a;
+
+export const scaleNumbers = (list, rMin, rMax, tMin, tMax) => {
     const scaledList = list.map(number => {
         return ({
             x1: (((number.x1 - rMin) / (rMax - rMin) * (tMax - tMin)) + tMin),

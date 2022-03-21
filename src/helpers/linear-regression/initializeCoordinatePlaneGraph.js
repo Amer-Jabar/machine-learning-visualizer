@@ -6,37 +6,35 @@ const initializeCoordinatePlaneGraph = (algorithmData) => {
 
     const containerWidth = document.querySelector('#coordinates-plane').clientWidth;
     const containerHeight = document.querySelector('#coordinates-plane').clientHeight;
-    
-    const widthScaler = (containerWidth - shifter - 5) / Math.max(...algorithmData.x);
-    const heightScaler = (containerHeight - shifter - 5) / Math.max(...algorithmData.y);
 
-    const mergedData = Array.from({ length: 100 }).map((_, i) => ({
+    const mergedData = Array.from({ length: algorithmData.x.length }).map((_, i) => ({
         x: algorithmData.x[i],
         y: algorithmData.y[i],
     }))
 
+    const minScaleX = Math.min(...algorithmData.x);
+    const maxScaleX = Math.max(...algorithmData.x);
+    const maxScaleY = Math.max(...algorithmData.y);
+
     const xScaler = scaleTime()
-        .range([0, containerWidth])
-        .domain(extent(mergedData, d => d.x));
+        .range([shifter, containerWidth - shifter])
+        .domain([minScaleX, maxScaleX]);
 
     const yScaler = scaleLinear()
-        .range([containerHeight, 0])
-        .domain([0, max(mergedData, d => d.y)]);
+        .range([containerHeight - shifter, shifter])
+        .domain([0, maxScaleY]);
 
     const coordinatePlaneSvg = select('#coordinates-plane-svg')
-        .attr('width', containerWidth + shifter)
+        .attr('width', containerWidth)
         .attr('height', containerHeight);
     
     const gX = coordinatePlaneSvg.append("g")
-        .attr("transform", `translate(${shifter}, -${shifter})`)
-        .call(axisLeft(yScaler));
+        .attr("transform", `translate(${0}, ${containerHeight - shifter})`)
+        .call(axisBottom(xScaler));
 
     const xTicks = gX.append('g')
-        .call(
-            axisLeft(yScaler)
-            .tickSize(containerWidth)
-        )
-        .attr('transform', `translate(${containerWidth}, -${0})`)
+        .call(axisBottom(xScaler))
+        .attr('transform', `translate(${0}, ${-containerHeight + (shifter * 2)})`)
 
     xTicks
         .selectAll('line')
@@ -50,19 +48,12 @@ const initializeCoordinatePlaneGraph = (algorithmData) => {
         .attr('stroke', '#dae3eb')
 
     const gY = coordinatePlaneSvg.append("g")
-        .attr("transform", `translate(${shifter}, ${containerHeight - shifter})`)
-        .call(
-            axisBottom(xScaler)
-            .tickValues([10, 20, 30, 40, 50, 60, 70, 80, 90])
-            .tickFormat(d => d)
-        );
+        .attr("transform", `translate(${shifter}, -${0})`)
+        .call(axisLeft(yScaler));
 
     const yTicks = gY.append('g')
-        .call(
-            axisBottom(xScaler)
-            .tickSize(containerHeight - shifter)
-        )
-        .attr('transform', `translate(${0}, -${containerHeight - shifter})`)
+        .call(axisLeft(yScaler))
+        .attr('transform', `translate(${containerWidth - (shifter * 2)}, -${0})`)
 
     yTicks
         .selectAll('line')
@@ -76,7 +67,7 @@ const initializeCoordinatePlaneGraph = (algorithmData) => {
         .attr('stroke', '#dae3eb')
 
     return {
-        mergedData, coordinatePlaneSvg, containerWidth, containerHeight, widthScaler, heightScaler
+        mergedData, coordinatePlaneSvg, containerWidth, containerHeight, minScaleX, maxScaleX, maxScaleY
     }
 }
 
