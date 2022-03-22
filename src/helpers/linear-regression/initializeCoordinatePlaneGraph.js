@@ -16,7 +16,7 @@ const initializeCoordinatePlaneGraph = (algorithmData) => {
     const maxScaleX = Math.max(...algorithmData.x);
     const maxScaleY = Math.max(...algorithmData.y);
 
-    const xScaler = scaleTime()
+    const xScaler = scaleLinear()
         .range([shifter, containerWidth - shifter])
         .domain([minScaleX, maxScaleX]);
 
