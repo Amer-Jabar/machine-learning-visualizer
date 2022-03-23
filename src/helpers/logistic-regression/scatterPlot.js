@@ -7,8 +7,6 @@ export const circleDiameter = 3;
 
 const scatterPlot = (mergedData, containerWidth, containerHeight, minScaleX, maxScaleX, maxScaleY, delay, rearrange) => {
 
-    console.log(mergedData);
-
     if ( rearrange ) {
         select('#coordinates-plane-svg')
             .selectAll('circle')

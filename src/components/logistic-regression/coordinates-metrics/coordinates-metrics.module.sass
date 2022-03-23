@@ -1,0 +1,27 @@
+.coordinates-metrics
+    width: 12em
+    height: max-content
+    position: absolute
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    border: #ebd6b9 solid 2px
+    border-radius: 0.25em
+    opacity: 0
+    animation: coordinates-metrics-popup 0.5s 1s ease-in-out normal forwards
+
+    *
+        margin: 0em
+        padding: 0.25em 1em
+        background: #f8eee0
+        font-family: 'Rubik'
+
+
+@keyframes coordinates-metrics-popup
+    0%
+        opacity: 0
+
+    100%
+        opacity: 1
+
+
