@@ -26,8 +26,8 @@ const drawLossLine = (lossLineDimensions) => {
     const lossPlaneXAxis = select('#loss-plane-x-axis');
     const lossPlaneYAxis = select('#loss-plane-y-axis');
 
-    const yMax = Math.max(...lossLineDimensions.map(loss => loss.y1))
-    const yMin = Math.min(...lossLineDimensions.map(loss => loss.y2))
+    const yMax = Math.max(...lossLineDimensions.map(loss => loss.y2))
+    const yMin = Math.min(...lossLineDimensions.map(loss => loss.y1))
     const xMax2 = Math.max(...lossLineDimensions.map(loss => loss.x2))
 
     const xScaler = scaleLinear()
@@ -36,42 +36,26 @@ const drawLossLine = (lossLineDimensions) => {
 
     const yScaler = scaleLinear()
         .range([containerHeight - (shifter * 2), 0])
-        .domain([yMin, yMax]);
+        .domain([yMin + 0.002, yMax - 0.002]);
     
     lossPlaneXAxis.call(axisBottom(xScaler))
     lossPlaneYAxis.call(axisLeft(yScaler))
 
-    // if ( lossPlaneSvg.selectAll('.loss-line').empty() ) {
-        lossPlaneSvg
-            .selectAll('.loss-line')
-            .data(lossLineDimensions)
-            .enter()
-            .append('line')
-            .attr('class', 'loss-line')
-            .attr('x1', d => shifter + (d.x1 * ((containerWidth - (shifter * 2)) / lossLineDimensions.length)))
-            .attr('x2', d => shifter + (d.x2 * ((containerWidth - (shifter * 2)) / lossLineDimensions.length)))
-            .attr('y1', d => scaleNumber(d.y1, yMin, yMax, yMin, yMax) * containerHeight)
-            .attr('y2', d => scaleNumber(d.y2, yMin, yMax, yMin, yMax) * containerHeight)
-            .attr('stroke', 'rgb(90, 141, 169)')
-            .attr('stroke-width', '2px')
-    // } else {
-    //     console.log(lossLineDimensions);
-    //     lossPlaneSvg
-    //         .selectAll('.loss-line')
-    //         .data(lossLineDimensions)
-    //         .enter()
-    //         .append('line')
-    //         .attr('class', 'loss-line')
-    //         .attr('x1', d => (d.x1 * 200) + shifter)
-    //         .attr('x2', d => (d.x2 * 200) + shifter)
-    //         .attr('y1', d => scaleNumber(d.y1, yMin, yMax, yMin, yMax) * containerHeight)
-    //         .attr('y2', d => scaleNumber(d.y2, yMin, yMax, yMin, yMax) * containerHeight)
-    //         .attr('stroke', 'rgb(90, 141, 169)')
-    //         .attr('stroke-width', '2px')
-    // }
+    console.log(lossLineDimensions);
+    lossPlaneSvg
+        .selectAll('.loss-line')
+        .data(lossLineDimensions)
+        .enter()
+        .append('line')
+        .attr('class', 'loss-line')
+        .attr('x1', d => shifter + (d.x1 * ((containerWidth - (shifter * 2)) / lossLineDimensions.length)))
+        .attr('x2', d => shifter + (d.x2 * ((containerWidth - (shifter * 2)) / lossLineDimensions.length)))
+        .attr('y1', d => scaleNumber(d.y1, yMin, yMax, yMin, yMax) * containerHeight)
+        .attr('y2', d => scaleNumber(d.y2, yMin, yMax, yMin, yMax) * containerHeight)
+        .attr('stroke', 'rgb(90, 141, 169)')
+        .attr('stroke-width', '2px')
 
-
-    // return gradientPlaneSvg;
+    return lossPlaneSvg;
 }
 
 export default drawLossLine;
