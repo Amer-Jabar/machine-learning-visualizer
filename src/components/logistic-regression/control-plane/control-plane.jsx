@@ -4,16 +4,17 @@ import getRandomCoeffs from '../../../helpers/logistic-regression/getRandomCoeff
 import getRandomData from '../../../helpers/logistic-regression/getRandomData';
 import executeAlgorithm from '../../../helpers/logistic-regression/executeAlgorithm';
 import initializeCoordinatePlaneGraph from '../../../helpers/logistic-regression/initializeCoordinatePlaneGraph';
-import initializeGradientGraph from '../../../helpers/logistic-regression/initializeGradientGraph';
 import scatterPlot from '../../../helpers/logistic-regression/scatterPlot';
 import calculateLine from '../../../helpers/logistic-regression/calculateLine';
 import createLine from '../../../helpers/logistic-regression/createLine';
 import calculateError from '../../../helpers/logistic-regression/calculateError';
 import clearAllGraphs from '../../../helpers/logistic-regression/clearAllGraphs';
-import calculateGradientLine from '../../../helpers/logistic-regression/calculateGradientLine';
-import drawGradientLine from '../../../helpers/logistic-regression/drawGradientLine';
+import calculateLossLine from '../../../helpers/logistic-regression/calculateLossLine';
+import drawLossLine from '../../../helpers/logistic-regression/drawLossLine';
+import clearLossLines from '../../../helpers/logistic-regression/clearLossLines'
 
 import style from './control-plane.module.sass';
+import initializeLossGraph from '../../../helpers/logistic-regression/initializeLossGraph';
 
 const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000, 10000];
 const LEARNING_RATE = [0.001, 0.0006, 0.000595, 0.00059, 0.00058, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];
@@ -29,9 +30,8 @@ const BASE_ALGORITHM_DATA = {
 const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
     
     const [algorithmData, setAlgorithmData] = useState(BASE_ALGORITHM_DATA);
-    const [gradientHistory, setGradientHistory] = useState([]);
     const [coordinatePlaneSvg, setCoordinatePlaneSvg] = useState(null);
-    const [gradientPlaneSvg, setGradientPlaneSvg] = useState(null);
+    const [lossPlaneSvg, setLossPlaneSvg] = useState(null);
     const [iterations, setIterations] = useState(0);
     let allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta && algorithmData.w1 !== null && algorithmData.w0 !== null;
 
@@ -62,10 +62,9 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                 getRandomData()
                 .then(randomData => {
                     if ( coordinatePlaneSvg ) {
-                        clearAllGraphs(coordinatePlaneSvg, gradientPlaneSvg, {
-                            circle: false, line: true, g: true, gradientLine: true
+                        clearAllGraphs(coordinatePlaneSvg, lossPlaneSvg, {
+                            circle: false, line: true, g: true, lossLine: true
                         });
-                        setGradientHistory([]);
                         setIterations(0);
                         setParentsAlgorithmData(BASE_ALGORITHM_DATA);
         
@@ -91,13 +90,9 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                         scatterPlot(mergedData, containerWidth, containerHeight, minScaleX, maxScaleX, maxScaleY, 0, false);
                         setCoordinatePlaneSvg(localCoordinatePlaneSvg);
                     }
+                    const localLossPlaneSvg = initializeLossGraph();
 
-                    initializeGradientGraph(null, {
-                        alterMinHistoryX: 0,
-                        alterMaxHistoryX: 2,
-                        alterMaxHistoryY: 1000,
-                    })
-
+                    setLossPlaneSvg(localLossPlaneSvg);
                     setAlgorithmData({
                         ...algorithmData,
                         ...randomData,
@@ -192,7 +187,6 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
             onClick={() => {
                 executeAlgorithm(algorithmData, setAlgorithmData)
                 .then(newAlgorithmData => {
-                    console.log(newAlgorithmData);
                 //     const { x1, x2, y1, y2 } = calculateLine(newAlgorithmData);
                 //     createLine(coordinatePlaneSvg, { x1, x2, y1, y2 }, newAlgorithmData, true);
 
@@ -201,13 +195,11 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                 //             alterMaxHistoryX: null,
                 //             alterMaxHistoryY: null,
                 //         });
-                //         const newGradientDimension = calculateGradientLine(
-                //             newAlgorithmData.epochs, 
-                //             newAlgorithmData.loss_hist, 
-                //             newAlgorithmData.w1_hist
-                //         );
-
-                //         if ( newGradientDimension ) {
+                        const lossLineDimensions = calculateLossLine(newAlgorithmData, iterations);
+                        if ( lossLineDimensions ) {
+                            clearLossLines();
+                            drawLossLine(lossLineDimensions)
+                        }
                 //             const newGradientHistory = newGradientDimension instanceof Object && !Array.isArray(newGradientDimension)
                 //             ? [...gradientHistory, newGradientDimension]
                 //             : Array.isArray(newGradientDimension)
@@ -219,9 +211,9 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                 //             setGradientPlaneSvg(localGradientPlaneSvg);
                 //         }
 
-                //     setIterations(iterations + (algorithmData.epochs || 1));
-                //     setAlgorithmData(newAlgorithmData);
-                //     setParentsAlgorithmData(newAlgorithmData);
+                    setIterations(iterations + (algorithmData.epochs || 1));
+                    setAlgorithmData(newAlgorithmData);
+                    setParentsAlgorithmData(newAlgorithmData);
                 })
             }}
             >Run Algorithm</button>
@@ -237,58 +229,57 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                         } : {}
                     }
                     onClick={() => {
-                        let algorithmDataClone = algorithmData;
-                        let iterationsClone = iterations;
-                        let coordinatePlaneSvgClone = coordinatePlaneSvg;
-                        let localGradientHistory = [...gradientHistory];
+                        // let algorithmDataClone = algorithmData;
+                        // let iterationsClone = iterations;
+                        // let coordinatePlaneSvgClone = coordinatePlaneSvg;
 
-                        if ( !coordinatePlaneSvgClone ) {
-                            const { mergedData, coordinatePlaneSvgEl, containerHeight, widthScaler, heightScaler } = initializeCoordinatePlaneGraph(algorithmDataClone);
-                            scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
-                            setCoordinatePlaneSvg(coordinatePlaneSvgEl);
-                            coordinatePlaneSvgClone = coordinatePlaneSvgEl;
-                        }
+                        // if ( !coordinatePlaneSvgClone ) {
+                        //     const { mergedData, coordinatePlaneSvgEl, containerHeight, widthScaler, heightScaler } = initializeCoordinatePlaneGraph(algorithmDataClone);
+                        //     scatterPlot(mergedData, containerHeight, widthScaler, heightScaler, 0);
+                        //     setCoordinatePlaneSvg(coordinatePlaneSvgEl);
+                        //     coordinatePlaneSvgClone = coordinatePlaneSvgEl;
+                        // }
 
-                        const recursiveFetches = async (minError) => {
-                            algorithmDataClone = await executeAlgorithm(algorithmDataClone);
-                            iterationsClone += (algorithmData.epochs || 1);
-                            const { x1, x2, y1, y2 } = calculateLine(algorithmDataClone);
-                            createLine(coordinatePlaneSvg || coordinatePlaneSvgClone, { x1, x2, y1, y2 }, algorithmDataClone, false);
+                        // const recursiveFetches = async (minError) => {
+                        //     algorithmDataClone = await executeAlgorithm(algorithmDataClone);
+                        //     iterationsClone += (algorithmData.epochs || 1);
+                        //     const { x1, x2, y1, y2 } = calculateLine(algorithmDataClone);
+                        //     createLine(coordinatePlaneSvg || coordinatePlaneSvgClone, { x1, x2, y1, y2 }, algorithmDataClone, false);
 
-                            setIterations(iterationsClone);
-                            setAlgorithmData(algorithmDataClone);
-                            setParentsAlgorithmData(algorithmDataClone);
+                        //     setIterations(iterationsClone);
+                        //     setAlgorithmData(algorithmDataClone);
+                        //     setParentsAlgorithmData(algorithmDataClone);
                             
-                            const { minHistoryX, maxHistoryX, maxHistoryY } = initializeGradientGraph(algorithmDataClone, {
-                                alterMinHistoryX: null,
-                                alterMaxHistoryX: null,
-                                alterMaxHistoryY: null,
-                            });
-                            const newGradientDimension = calculateGradientLine(
-                                algorithmDataClone.epochs,
-                                algorithmDataClone.loss_hist,
-                                algorithmDataClone.w1_hist
-                            );
+                        //     const { minHistoryX, maxHistoryX, maxHistoryY } = initializeGradientGraph(algorithmDataClone, {
+                        //         alterMinHistoryX: null,
+                        //         alterMaxHistoryX: null,
+                        //         alterMaxHistoryY: null,
+                        //     });
+                        //     const newGradientDimension = calculateLossLine(
+                        //         algorithmDataClone.epochs,
+                        //         algorithmDataClone.loss_hist,
+                        //         algorithmDataClone.w1_hist
+                        //     );
                             
-                            if ( newGradientDimension ) {
-                                localGradientHistory = newGradientDimension instanceof Object && !Array.isArray(newGradientDimension)
-                                ? [...localGradientHistory, newGradientDimension]
-                                : Array.isArray(newGradientDimension)
-                                ? [...localGradientHistory, ...newGradientDimension]
-                                : [...localGradientHistory]
+                        //     if ( newGradientDimension ) {
+                        //         localGradientHistory = newGradientDimension instanceof Object && !Array.isArray(newGradientDimension)
+                        //         ? [...localGradientHistory, newGradientDimension]
+                        //         : Array.isArray(newGradientDimension)
+                        //         ? [...localGradientHistory, ...newGradientDimension]
+                        //         : [...localGradientHistory]
     
-                                const localGradientPlaneSvg = drawGradientLine(localGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
-                                setGradientHistory(localGradientHistory);
-                                setGradientPlaneSvg(localGradientPlaneSvg);
-                            }    
+                        //         const localGradientPlaneSvg = drawGradientLine(localGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
+                        //         setGradientHistory(localGradientHistory);
+                        //         setGradientPlaneSvg(localGradientPlaneSvg);
+                        //     }    
 
-                            const mustContinue = calculateError(algorithmDataClone) > minError;
-                            if ( !mustContinue ) return;
+                        //     const mustContinue = calculateError(algorithmDataClone) > minError;
+                        //     if ( !mustContinue ) return;
 
-                            return recursiveFetches(minError);
-                        }
+                        //     return recursiveFetches(minError);
+                        // }
                         
-                        recursiveFetches(algorithmData.minError || 1);
+                        // recursiveFetches(algorithmData.minError || 1);
                     }}>Start</button>
                 </div>
                 <div className={style['control-plane-metrics']}>
@@ -316,12 +307,11 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                 }
             }
             onClick={() => {
-                clearAllGraphs(coordinatePlaneSvg, gradientPlaneSvg, {
-                    circle: true, line: true, g: false, gradientLine: true
-                });
+                // clearAllGraphs(coordinatePlaneSvg, gradientPlaneSvg, {
+                //     circle: true, line: true, g: false, gradientLine: true
+                // });
 
                 setAlgorithmData(BASE_ALGORITHM_DATA);
-                setGradientHistory([]);
                 setParentsAlgorithmData(BASE_ALGORITHM_DATA);
                 setIterations(0);
                 setCoordinatePlaneSvg(null);

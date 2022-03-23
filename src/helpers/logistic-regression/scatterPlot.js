@@ -1,5 +1,5 @@
 import { select, transition } from "d3";
-import { scaleNumber } from "./drawGradientLine";
+import { scaleNumber } from "./drawLossLine";
 
 import { shifter } from "./initializeCoordinatePlaneGraph";
 

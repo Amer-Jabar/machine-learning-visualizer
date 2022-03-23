@@ -1,5 +1,5 @@
-const clearAllGraphs = (coordinatePlaneSvg, gradientPlaneSvg, {
-    circle, line, g, gradientLine
+const clearAllGraphs = (coordinatePlaneSvg, lossPlaneSvg, {
+    circle, line, g, lossLine
 }) => {
     if ( coordinatePlaneSvg && circle )
         coordinatePlaneSvg.selectAll('circle').remove()
@@ -8,8 +8,8 @@ const clearAllGraphs = (coordinatePlaneSvg, gradientPlaneSvg, {
     if ( coordinatePlaneSvg && g )
         coordinatePlaneSvg.selectAll('g').remove()
 
-    if ( gradientPlaneSvg && gradientLine )
-        gradientPlaneSvg.selectAll('line').remove();
+    if ( lossPlaneSvg && lossLine )
+        lossPlaneSvg.selectAll('*').remove();
 }
 
 export default clearAllGraphs;

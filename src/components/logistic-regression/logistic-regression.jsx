@@ -4,9 +4,9 @@ import CoordinatesMetrics from './coordinates-metrics/coordinates-metrics';
 import CoordinatesTabs from './coordinate-tabs/coordinate-tabs';
 import CoordinatesPlane from './coordinates-plane/coordinates-plane';
 import ControlPlane from './control-plane/control-plane';
+import LossPlane from './loss-plane/loss-plane';
 
 import style from './logistic-regression.module.sass';
-import GradientPlane from './gradient-plane/gradient-plane';
 
 const LogisticRegression = () => {
 
@@ -38,9 +38,9 @@ const LogisticRegression = () => {
             <CoordinatesPlane
             selectedTabIndex={selectedTab}
             ></CoordinatesPlane>
-            <GradientPlane
+            <LossPlane
             selectedTabIndex={selectedTab}
-            ></GradientPlane>
+            ></LossPlane>
             <ControlPlane
             setAlgorithmData={setAlgorithmData}
             ></ControlPlane>

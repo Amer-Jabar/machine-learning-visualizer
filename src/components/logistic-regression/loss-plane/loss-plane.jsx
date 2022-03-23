@@ -1,4 +1,4 @@
-import style from './gradient-plane.module.sass';
+import style from './loss-plane.module.sass';
 
 const tabIndex = 1;
 
@@ -6,14 +6,14 @@ const GradientPlane = ({ selectedTabIndex }) => {
 
     return (
         <section
-        id='gradient-plane'
-        className={style['gradient-plane']}
+        id='loss-plane'
+        className={style['loss-plane']}
         style={{
             opacity: selectedTabIndex === tabIndex ? 1 : 0
         }}>
             <svg
-            className={style['gradient-plane-svg']}
-            id='gradient-plane-svg'
+            className={style['loss-plane-svg']}
+            id='loss-plane-svg'
             ></svg>
         </section>
     )

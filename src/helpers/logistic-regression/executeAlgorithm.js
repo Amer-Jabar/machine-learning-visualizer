@@ -12,12 +12,10 @@ const executeAlgorithm = async (algorithmData) => {
     
     const result = await runAlgorithm(postPayload);
 
-    console.log(result);
-
     return {
         ...algorithmData,
         ...result,
-        loss_hist: [...algorithmData.loss_hist, ...result.loss_hist],
+        loss_hist: [...result.loss_hist],
     }
 }
 
