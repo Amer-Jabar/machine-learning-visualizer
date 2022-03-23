@@ -1,7 +1,7 @@
 import { axisBottom, axisLeft, scaleLinear, select } from "d3";
 import { shifter } from "./initializeCoordinatePlaneGraph";
 
-const initializeLossGraph = () => {
+const initializeLossGraph = (lossPlaneSvgParam) => {
 
     const containerWidth = document.querySelector('#loss-plane').clientWidth;
     const containerHeight = document.querySelector('#loss-plane').clientHeight;    
@@ -13,6 +13,18 @@ const initializeLossGraph = () => {
     const yScaler = scaleLinear()
         .range([containerHeight - (shifter * 2), 0])
         .domain([0, 100]);
+
+    if ( lossPlaneSvgParam ) {
+        lossPlaneSvgParam
+            .select('#loss-plane-x-axis')
+            .call(axisBottom(xScaler));
+
+            lossPlaneSvgParam
+            .select('#loss-plane-y-axis')
+            .call(axisLeft(yScaler));
+
+        return lossPlaneSvgParam;
+    }
     
     const lossPlaneSvg = select('#loss-plane-svg')
         .attr('width', containerWidth)

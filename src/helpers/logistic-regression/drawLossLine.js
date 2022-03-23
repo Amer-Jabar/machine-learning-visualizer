@@ -46,8 +46,6 @@ const drawLossLine = (lossLineDimensions) => {
     lossPlaneXAxis.call(axisBottom(xScaler))
     lossPlaneYAxis.call(axisLeft(yScaler))
 
-    console.log({ lossLineDimensions, yMax, yMin });
-
     lossPlaneSvg
         .selectAll('.loss-line')
         .data(lossLineDimensions)
