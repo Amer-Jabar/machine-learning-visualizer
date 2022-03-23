@@ -5,7 +5,6 @@ import getRandomData from '../../../helpers/logistic-regression/getRandomData';
 import executeAlgorithm from '../../../helpers/logistic-regression/executeAlgorithm';
 import initializeCoordinatePlaneGraph from '../../../helpers/logistic-regression/initializeCoordinatePlaneGraph';
 import scatterPlot from '../../../helpers/logistic-regression/scatterPlot';
-import calculateError from '../../../helpers/logistic-regression/calculateError';
 import initializeLossGraph from '../../../helpers/logistic-regression/initializeLossGraph';
 import clearAllGraphs from '../../../helpers/logistic-regression/clearAllGraphs';
 import calculateLossLine from '../../../helpers/logistic-regression/calculateLossLine';
@@ -15,7 +14,7 @@ import clearLossLines from '../../../helpers/logistic-regression/clearLossLines'
 import style from './control-plane.module.sass';
 
 const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000, 10000];
-const LEARNING_RATE = [0.001, 0.0006, 0.000595, 0.00059, 0.00058, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];
+const LEARNING_RATE = [0.1, 0.01, 0.001, 0.0006, 0.000595, 0.00059, 0.00058, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];
 const ERROR_LIMITS = [1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001, 0.0000005, 0.0000001, 0.00000005, 0.00000001];
 const BASE_ALGORITHM_DATA = {
     loss_hist: [],

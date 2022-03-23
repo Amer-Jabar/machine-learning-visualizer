@@ -26,8 +26,13 @@ const drawLossLine = (lossLineDimensions) => {
     const lossPlaneXAxis = select('#loss-plane-x-axis');
     const lossPlaneYAxis = select('#loss-plane-y-axis');
 
-    const yMax = Math.max(...lossLineDimensions.map(loss => loss.y2))
-    const yMin = Math.min(...lossLineDimensions.map(loss => loss.y1))
+    const yCombination = [
+        ...lossLineDimensions.map(loss => loss.y1),
+        ...lossLineDimensions.map(loss => loss.y2),
+    ]
+
+    const yMax = Math.max(...yCombination);
+    const yMin = Math.min(...yCombination);
     const xMax2 = Math.max(...lossLineDimensions.map(loss => loss.x2))
 
     const xScaler = scaleLinear()
@@ -36,12 +41,13 @@ const drawLossLine = (lossLineDimensions) => {
 
     const yScaler = scaleLinear()
         .range([containerHeight - (shifter * 2), 0])
-        .domain([yMin + 0.002, yMax - 0.002]);
+        .domain([yMin, yMax]);
     
     lossPlaneXAxis.call(axisBottom(xScaler))
     lossPlaneYAxis.call(axisLeft(yScaler))
 
-    console.log(lossLineDimensions);
+    console.log({ lossLineDimensions, yMax, yMin });
+
     lossPlaneSvg
         .selectAll('.loss-line')
         .data(lossLineDimensions)
@@ -50,8 +56,8 @@ const drawLossLine = (lossLineDimensions) => {
         .attr('class', 'loss-line')
         .attr('x1', d => shifter + (d.x1 * ((containerWidth - (shifter * 2)) / lossLineDimensions.length)))
         .attr('x2', d => shifter + (d.x2 * ((containerWidth - (shifter * 2)) / lossLineDimensions.length)))
-        .attr('y1', d => scaleNumber(d.y1, yMin, yMax, yMin, yMax) * containerHeight)
-        .attr('y2', d => scaleNumber(d.y2, yMin, yMax, yMin, yMax) * containerHeight)
+        .attr('y1', d => scaleNumber(d.y1, yMin, yMax, (containerHeight - shifter) / containerHeight, shifter / containerHeight) * containerHeight)
+        .attr('y2', d => scaleNumber(d.y2, yMin, yMax, (containerHeight - shifter) / containerHeight, shifter / containerHeight) * containerHeight)
         .attr('stroke', 'rgb(90, 141, 169)')
         .attr('stroke-width', '2px')
 

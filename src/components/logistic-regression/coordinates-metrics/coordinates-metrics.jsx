@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 
 import setMetricsBoard from '../../../helpers/linear-regression/setMetricsBoard';
-import calculateError from "../../../helpers/linear-regression/calculateError";
 
 import style from './coordinates-metrics.module.sass';
 
