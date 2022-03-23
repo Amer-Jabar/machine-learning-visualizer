@@ -3,7 +3,7 @@
 import { API } from "../..";
 
 const runAlgorithm = (algorithmData) => (
-    fetch(`${API}/api/linear-regression/execute`, {
+    fetch(`${API}/api/logistic-regression/execute`, {
         method: 'POST',
         body: JSON.stringify(algorithmData)
     })

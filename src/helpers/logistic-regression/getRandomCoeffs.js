@@ -1,7 +1,7 @@
 import { API } from "../..";
 
 const getRandomCoeffs = () => (
-    fetch(`${API}/api/linear-regression/coeffs`)
+    fetch(`${API}/api/logistic-regression/coeffs`)
     .then(res => res.json())
 )
 

@@ -25,7 +25,6 @@ const Visualizer = () => {
     useEffect(() => setCurrentElementId(algorithm), [algorithm]);
 
     const RenderedAlgorithm = () => {
-        console.log(algorithm);
         if ( algorithm === 'linear-regression' )
             return <LinearRegression key={1}></LinearRegression>
         else if ( algorithm === 'logistic-regression' )

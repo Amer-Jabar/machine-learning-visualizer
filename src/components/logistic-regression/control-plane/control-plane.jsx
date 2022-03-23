@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 
-import getRandomCoeffs from '../../../helpers/linear-regression/getRandomCoeffs';
-import getRandomData from '../../../helpers/linear-regression/getRandomData';
-import executeAlgorithm from '../../../helpers/linear-regression/executeAlgorithm';
-import initializeCoordinatePlaneGraph from '../../../helpers/linear-regression/initializeCoordinatePlaneGraph';
-import initializeGradientGraph from '../../../helpers/linear-regression/initializeGradientGraph';
-import scatterPlot from '../../../helpers/linear-regression/scatterPlot';
-import calculateLine from '../../../helpers/linear-regression/calculateLine';
-import createLine from '../../../helpers/linear-regression/createLine';
-import calculateError from '../../../helpers/linear-regression/calculateError';
-import clearAllGraphs from '../../../helpers/linear-regression/clearAllGraphs';
-import calculateGradientLine from '../../../helpers/linear-regression/calculateGradientLine';
-import drawGradientLine from '../../../helpers/linear-regression/drawGradientLine';
+import getRandomCoeffs from '../../../helpers/logistic-regression/getRandomCoeffs';
+import getRandomData from '../../../helpers/logistic-regression/getRandomData';
+import executeAlgorithm from '../../../helpers/logistic-regression/executeAlgorithm';
+import initializeCoordinatePlaneGraph from '../../../helpers/logistic-regression/initializeCoordinatePlaneGraph';
+import initializeGradientGraph from '../../../helpers/logistic-regression/initializeGradientGraph';
+import scatterPlot from '../../../helpers/logistic-regression/scatterPlot';
+import calculateLine from '../../../helpers/logistic-regression/calculateLine';
+import createLine from '../../../helpers/logistic-regression/createLine';
+import calculateError from '../../../helpers/logistic-regression/calculateError';
+import clearAllGraphs from '../../../helpers/logistic-regression/clearAllGraphs';
+import calculateGradientLine from '../../../helpers/logistic-regression/calculateGradientLine';
+import drawGradientLine from '../../../helpers/logistic-regression/drawGradientLine';
 
 import style from './control-plane.module.sass';
 
@@ -33,7 +33,7 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
     const [coordinatePlaneSvg, setCoordinatePlaneSvg] = useState(null);
     const [gradientPlaneSvg, setGradientPlaneSvg] = useState(null);
     const [iterations, setIterations] = useState(0);
-    let allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta && algorithmData.w1 && algorithmData.w0;
+    let allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta && algorithmData.w1 !== null && algorithmData.w0 !== null;
 
     useEffect(() => {
         return () => {
@@ -109,7 +109,8 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
             >Get Random Data</button>
             <button
             style={
-                algorithmData.w1 && algorithmData.w0 ? {
+                (algorithmData.w1 !== null && algorithmData.w1 !== undefined) &&
+                (algorithmData.w0 !== null && algorithmData.w0 !== undefined) ? {
                     background: 'aliceblue',
                     border: 'solid 1px #5a8da9'
                 } : {
@@ -191,35 +192,36 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
             onClick={() => {
                 executeAlgorithm(algorithmData, setAlgorithmData)
                 .then(newAlgorithmData => {
-                    const { x1, x2, y1, y2 } = calculateLine(newAlgorithmData);
-                    createLine(coordinatePlaneSvg, { x1, x2, y1, y2 }, newAlgorithmData, true);
+                    console.log(newAlgorithmData);
+                //     const { x1, x2, y1, y2 } = calculateLine(newAlgorithmData);
+                //     createLine(coordinatePlaneSvg, { x1, x2, y1, y2 }, newAlgorithmData, true);
 
-                        const { minHistoryX, maxHistoryX, maxHistoryY } = initializeGradientGraph(newAlgorithmData, {
-                            alterMinHistoryX: null,
-                            alterMaxHistoryX: null,
-                            alterMaxHistoryY: null,
-                        });
-                        const newGradientDimension = calculateGradientLine(
-                            newAlgorithmData.epochs, 
-                            newAlgorithmData.loss_hist, 
-                            newAlgorithmData.w1_hist
-                        );
+                //         const { minHistoryX, maxHistoryX, maxHistoryY } = initializeGradientGraph(newAlgorithmData, {
+                //             alterMinHistoryX: null,
+                //             alterMaxHistoryX: null,
+                //             alterMaxHistoryY: null,
+                //         });
+                //         const newGradientDimension = calculateGradientLine(
+                //             newAlgorithmData.epochs, 
+                //             newAlgorithmData.loss_hist, 
+                //             newAlgorithmData.w1_hist
+                //         );
 
-                        if ( newGradientDimension ) {
-                            const newGradientHistory = newGradientDimension instanceof Object && !Array.isArray(newGradientDimension)
-                            ? [...gradientHistory, newGradientDimension]
-                            : Array.isArray(newGradientDimension)
-                            ? [...gradientHistory, ...newGradientDimension]
-                            : [...gradientHistory]
+                //         if ( newGradientDimension ) {
+                //             const newGradientHistory = newGradientDimension instanceof Object && !Array.isArray(newGradientDimension)
+                //             ? [...gradientHistory, newGradientDimension]
+                //             : Array.isArray(newGradientDimension)
+                //             ? [...gradientHistory, ...newGradientDimension]
+                //             : [...gradientHistory]
 
-                            const localGradientPlaneSvg = drawGradientLine(newGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
-                            setGradientHistory(newGradientHistory);
-                            setGradientPlaneSvg(localGradientPlaneSvg);
-                        }
+                //             const localGradientPlaneSvg = drawGradientLine(newGradientHistory, minHistoryX, maxHistoryX, maxHistoryY);
+                //             setGradientHistory(newGradientHistory);
+                //             setGradientPlaneSvg(localGradientPlaneSvg);
+                //         }
 
-                    setIterations(iterations + (algorithmData.epochs || 1));
-                    setAlgorithmData(newAlgorithmData);
-                    setParentsAlgorithmData(newAlgorithmData);
+                //     setIterations(iterations + (algorithmData.epochs || 1));
+                //     setAlgorithmData(newAlgorithmData);
+                //     setParentsAlgorithmData(newAlgorithmData);
                 })
             }}
             >Run Algorithm</button>

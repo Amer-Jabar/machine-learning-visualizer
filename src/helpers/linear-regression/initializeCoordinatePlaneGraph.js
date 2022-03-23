@@ -1,6 +1,6 @@
 import { select, axisBottom, axisLeft, scaleLinear } from 'd3';
 
-export const shifter = 30;
+export const shifter = 35;
 
 const initializeCoordinatePlaneGraph = (algorithmData) => {
 
