@@ -15,13 +15,11 @@ import style from './control-plane.module.sass';
 import calculateError from '../../../helpers/linear-regression/calculateError';
 import classifyScatterPlot from '../../../helpers/logistic-regression/classifyScatterPlot';
 
-const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000, 10000];
-const LEARNING_RATE = [0.1, 0.01, 0.001, 0.0006, 0.000595, 0.00059, 0.00058, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];
-const ERROR_LIMITS = [1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001, 0.0000005, 0.0000001, 0.00000005, 0.00000001];
+const LEARNING_RATE = [0.1, 0.01, 0.001, 0.0006, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];
+const ERROR_LIMITS = [0.01, 0.005, 0.001, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001, 0.0000005, 0.0000001, 0.00000005, 0.00000001, 0.000000005, 0.000000001];
 const BASE_ALGORITHM_DATA = {
     loss_hist: [],
-    epochs: 1,
-    eta: 0.001,
+    eta: 0.01,
     w1: null,
     w0: null,
 }
@@ -138,21 +136,6 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
             }}
             >Initialize Random Coeffecients</button>
             <div className={style['control-plane-coeff-container']}>
-                <label>Request Epochs: </label>
-                <select
-                className={style['control-plane-coeff-selector']}
-                name="epoch-selector" 
-                id="epoch-selector"
-                value={ algorithmData.epochs || 1 }
-                onChange={e => setAlgorithmData({
-                    ...algorithmData,
-                    epochs: Number(e.target.value)
-                })}
-                >
-                    { EPOCH_STEPS.map((step_size, index) => <option value={step_size} key={index}>{step_size}</option>) }
-                </select>
-            </div>
-            <div className={style['control-plane-coeff-container']}>
                 <label>Learning Rate: </label>
                 <select
                 className={style['control-plane-coeff-selector']}
@@ -202,9 +185,10 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                         clearLossLines(lossPlaneSvg);
                         drawLossLine(lossLineDimensions)
                     }
-                    classifyScatterPlot(coordinatePlaneSvg, algorithmData);
+                    console.log(newAlgorithmData);
+                    classifyScatterPlot(coordinatePlaneSvg, newAlgorithmData, false);
 
-                    setIterations(iterations + (algorithmData.epochs || 1));
+                    setIterations(iterations + 1);
                     setAlgorithmData(newAlgorithmData);
                     setParentsAlgorithmData(newAlgorithmData);
                 })
@@ -228,12 +212,13 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
 
                         const recursiveFetches = async (minError) => {
                             algorithmDataClone = await executeAlgorithm(algorithmDataClone);
-                            iterationsClone += (algorithmData.epochs || 1);
+                            iterationsClone++;
                             const lossLineDimensions = calculateLossLine(algorithmDataClone, iterationsClone);
                             if ( lossLineDimensions ) {
                                 clearLossLines(localLossPlaneSvg);
                                 drawLossLine(lossLineDimensions)
                             }
+                            classifyScatterPlot(coordinatePlaneSvg, algorithmDataClone, true);
 
                             setIterations(iterationsClone);
                             setAlgorithmData(algorithmDataClone);

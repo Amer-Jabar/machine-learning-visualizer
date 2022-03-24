@@ -7,16 +7,14 @@ export const circleDiameter = 3;
 
 const scatterPlot = (mergedData, containerWidth, containerHeight, minScaleX, maxScaleX, maxScaleY, delay, rearrange) => {
 
+    console.log({ rearrange });
     if ( rearrange ) {
         select('#coordinates-plane-svg')
             .selectAll('circle')
             .data(mergedData)
-            .transition(
-                transition()
-                .duration(100)
-            )
             .attr('cx', d => `${scaleNumber(d.x, minScaleX, maxScaleX, shifter + circleDiameter, containerWidth - shifter - circleDiameter)}px`)
             .attr('cy', d => `${scaleNumber(d.y, 0, maxScaleY, containerHeight - shifter - circleDiameter, shifter + circleDiameter)}px`)
+            .attr('fill', (d, i) => `hsl(205, 74%, ${100 - ((i + 25) / (mergedData.length + 25)) * 100}%)`)
             
     } else {
         select('#coordinates-plane-svg')

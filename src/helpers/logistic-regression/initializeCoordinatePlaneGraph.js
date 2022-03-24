@@ -2,12 +2,17 @@ import { select, axisBottom, axisLeft, scaleLinear, scaleTime } from 'd3';
 
 export const shifter = 45;
 
-export const mergeData = (algorithmData) => {
-    const mergedData = Array.from({ length: algorithmData.x.length }).map((_, i) => ({
-        x: algorithmData.x[i],
-        y: algorithmData.y[i],
-    }))
-    return mergedData;
+export const mergeData = (algorithmData, ofPredictions) => {
+    if ( ofPredictions )
+        return Array.from({ length: algorithmData.x.length }).map((_, i) => ({
+            x: algorithmData.x[i],
+            y: algorithmData.pred[i],
+        }))
+    else
+        return Array.from({ length: algorithmData.x.length }).map((_, i) => ({
+            x: algorithmData.x[i],
+            y: algorithmData.y[i],
+        }))
 }
 
 const initializeCoordinatePlaneGraph = (algorithmData) => {
