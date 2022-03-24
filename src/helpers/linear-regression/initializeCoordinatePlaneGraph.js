@@ -28,6 +28,21 @@ const initializeCoordinatePlaneGraph = (algorithmData) => {
         .attr('width', containerWidth)
         .attr('height', containerHeight);
     
+    // Appending text and setting coordinates
+    coordinatePlaneSvg
+        .append('text')
+        .text('W1')
+        .attr('x', `${(containerWidth / 2) - shifter}px`)
+        .attr('y', `${containerHeight}px`)
+    
+    // Appending text, setting coordinates and rotating around the new altered origin
+    coordinatePlaneSvg
+        .append('text')
+        .text('Loss')
+        .attr('x', `${0}px`)
+        .attr('y', `${containerHeight / 2 + 10}px`)
+        .attr('transform', `rotate(${-90}, ${0}, ${containerHeight / 2})`)
+
     const gX = coordinatePlaneSvg.append("g")
         .attr("transform", `translate(${0}, ${containerHeight - shifter})`)
         .call(axisBottom(xScaler));

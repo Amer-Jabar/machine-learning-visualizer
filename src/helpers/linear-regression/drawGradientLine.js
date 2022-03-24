@@ -22,25 +22,24 @@ const drawGradientLine = (gradientHistory, minHistoryX, maxHistoryX, maxHistoryY
     const containerWidth = document.querySelector('#gradient-plane').clientWidth;
     const containerHeight = document.querySelector('#gradient-plane').clientHeight;
 
-    gradientHistory = scaleNumbers(gradientHistory, minHistoryX, maxHistoryX, 0, containerWidth);
+    gradientHistory = scaleNumbers(gradientHistory, minHistoryX, maxHistoryX, shifter, containerWidth);
+    const gradientLocalShifter = shifter + (shifter / 2);
 
     const gradientPlaneSvg = select('#gradient-plane-svg');
 
     gradientPlaneSvg
-        .data(gradientHistory)
         .selectAll('.gradient-plane-svg-line')
         .data(gradientHistory)
         .enter()
         .append('line')
         .attr('class', 'gradient-plane-svg-line')
-        .attr('x1', d => d.x1 + shifter)
-        .attr('x2', d => d.x2 + shifter)
-        .attr('y1', d => (containerHeight - ((d.y1 / maxHistoryY) * containerHeight) - shifter))
-        .attr('y2', d => (containerHeight - ((d.y2 / maxHistoryY) * containerHeight) - shifter))
+        .attr('x1', d => d.x1 - shifter)
+        .attr('x2', d => d.x2 - shifter)
+        .attr('y1', d => (containerHeight - ((d.y1 / maxHistoryY) * (containerHeight - gradientLocalShifter)) - (gradientLocalShifter)))
+        .attr('y2', d => (containerHeight - ((d.y2 / maxHistoryY) * (containerHeight - gradientLocalShifter)) - (gradientLocalShifter)))
         .attr('stroke', 'rgb(90, 141, 169)')
         .attr('stroke-width', '2px')
 
-    return gradientPlaneSvg;
 }
 
 export default drawGradientLine;

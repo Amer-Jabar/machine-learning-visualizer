@@ -6,10 +6,12 @@ const initializeGradientGraph = (algorithmData, {
     alterMinHistoryX,
     alterMaxHistoryX,
     alterMaxHistoryY,
+    gradientPlaneSvg,
 }) => {
 
     const containerWidth = document.querySelector('#gradient-plane').clientWidth;
-    const containerHeight = document.querySelector('#gradient-plane').clientHeight;    
+    const containerHeight = document.querySelector('#gradient-plane').clientHeight;
+    const localShifter = shifter + (shifter / 2);
 
     let minHistoryX;
     let maxHistoryX;
@@ -26,39 +28,57 @@ const initializeGradientGraph = (algorithmData, {
     }
 
     const xScaler = scaleLinear()
-        .range([0, containerWidth])
+        .range([localShifter, containerWidth - localShifter])
         .domain([minHistoryX, maxHistoryX])
 
     const yScaler = scaleLinear()
-        .range([containerHeight, 0])
+        .range([containerHeight - localShifter, localShifter])
         .domain([0, maxHistoryY]);
 
-    if ( select('#gradient-plane-x-axis').empty() || select('#gradient-plane-y-axis').empty() ) {
+    let localGradientPlaneSvg = gradientPlaneSvg;
 
-        const gradientPlaneSvg = select('#gradient-plane-svg')
-            .attr('width', containerWidth + shifter)
+    if ( !localGradientPlaneSvg) {
+
+        localGradientPlaneSvg = select('#gradient-plane-svg')
+            .attr('width', containerWidth)
             .attr('height', containerHeight);
 
-        gradientPlaneSvg.append("g")
+        // Appending text and setting coordinates
+        localGradientPlaneSvg
+            .append('text')
+            .text('Observations')
+            .attr('x', `${(containerWidth / 2) - localShifter}px`)
+            .attr('y', `${containerHeight - (localShifter / 4)}px`)
+
+        // Appending text, setting coordinates and rotating around the new altered origin
+        localGradientPlaneSvg
+            .append('text')
+            .text('Value')
+            .attr('x', `${0}px`)
+            .attr('y', `${containerHeight / 2 + (localShifter / 4)}px`)
+            .attr('transform', `rotate(${-90}, ${0}, ${containerHeight / 2})`)
+
+
+        localGradientPlaneSvg.append("g")
             .attr('id', 'gradient-plane-x-axis')
-            .attr("transform", `translate(${shifter}, ${containerHeight - shifter})`)
+            .attr("transform", `translate(${0}, ${containerHeight - localShifter})`)
             .call(axisBottom(xScaler));
                     
-        gradientPlaneSvg.append("g")
+        localGradientPlaneSvg.append("g")
             .attr('id', 'gradient-plane-y-axis')
-            .attr("transform", `translate(${shifter}, -${shifter})`)
+            .attr("transform", `translate(${localShifter}, -${0})`)
             .call(axisLeft(yScaler));
 
     } else {
-        select('#gradient-plane-x-axis')
+        localGradientPlaneSvg
             .call(axisBottom(xScaler));
 
-        select('#gradient-plane-y-axis')
+        localGradientPlaneSvg
             .call(axisLeft(yScaler));
     }
 
     return {
-        minHistoryX, maxHistoryX, maxHistoryY
+        localGradientPlaneSvg, minHistoryX, maxHistoryX, maxHistoryY
     }
 };
 

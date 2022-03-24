@@ -40,6 +40,21 @@ const initializeLossGraph = (lossPlaneSvgParam) => {
         .attr("transform", `translate(${shifter}, ${shifter})`)
         .call(axisLeft(yScaler));
 
+    // Appending text and setting coordinates
+    lossPlaneSvg
+        .append('text')
+        .text('Epochs')
+        .attr('x', `${(containerWidth / 2)}px`)
+        .attr('y', `${containerHeight - 5}px`)
+
+    // Appending text, setting coordinates and rotating around the new altered origin
+    lossPlaneSvg
+        .append('text')
+        .text('Loss')
+        .attr('x', `${0}px`)
+        .attr('y', `${containerHeight / 2 + 10}px`)
+        .attr('transform', `rotate(${-90}, ${0}, ${containerHeight / 2})`)
+
     return lossPlaneSvg;
 }
 

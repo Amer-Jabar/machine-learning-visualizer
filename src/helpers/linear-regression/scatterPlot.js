@@ -5,9 +5,9 @@ import { shifter } from "./initializeCoordinatePlaneGraph";
 
 export const circleDiameter = 3;
 
-const scatterPlot = (mergedData, containerWidth, containerHeight, minScaleX, maxScaleX, maxScaleY, delay, rearrange) => {
+const scatterPlot = (mergedData, containerWidth, containerHeight, minScaleX, maxScaleX, maxScaleY, delay, planesAreBlank) => {
     
-    if ( rearrange ) {
+    if ( planesAreBlank === false ) {
         select('#coordinates-plane-svg')
             .selectAll('circle')
             .data(mergedData)
