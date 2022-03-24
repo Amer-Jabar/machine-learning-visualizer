@@ -8,8 +8,6 @@ const scaleGradientPlane = (containerWidth, containerHeight, gradientPlaneSvg, {
 
     const localShifter = shifter + (shifter / 2);
 
-    console.log({ containerHeight, containerWidth, maxHistoryX, maxHistoryY, minHistoryX });
-
     const xScaler = scaleLinear()
         .range([localShifter, containerWidth - localShifter])
         .domain([minHistoryX, maxHistoryX])

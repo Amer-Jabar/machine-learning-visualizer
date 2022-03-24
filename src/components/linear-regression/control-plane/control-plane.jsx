@@ -12,10 +12,10 @@ import calculateError from '../../../helpers/linear-regression/calculateError';
 import clearAllGraphs from '../../../helpers/linear-regression/clearAllGraphs';
 import calculateGradientLine from '../../../helpers/linear-regression/calculateGradientLine';
 import drawGradientLine from '../../../helpers/linear-regression/drawGradientLine';
-
-import style from './control-plane.module.sass';
 import calculateGradientScale from '../../../helpers/linear-regression/calculateGradientScale';
 import scaleGradientPlane from '../../../helpers/linear-regression/scaleGradientPlane';
+
+import style from './control-plane.module.sass';
 
 const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000, 10000];
 const LEARNING_RATE = [0.001, 0.0006, 0.000595, 0.00059, 0.00058, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];

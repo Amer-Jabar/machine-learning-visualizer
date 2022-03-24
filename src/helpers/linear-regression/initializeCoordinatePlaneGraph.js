@@ -31,14 +31,14 @@ const initializeCoordinatePlaneGraph = (algorithmData) => {
     // Appending text and setting coordinates
     coordinatePlaneSvg
         .append('text')
-        .text('W1')
+        .text('Observation')
         .attr('x', `${(containerWidth / 2) - shifter}px`)
         .attr('y', `${containerHeight}px`)
     
     // Appending text, setting coordinates and rotating around the new altered origin
     coordinatePlaneSvg
         .append('text')
-        .text('Loss')
+        .text('Value')
         .attr('x', `${0}px`)
         .attr('y', `${containerHeight / 2 + 10}px`)
         .attr('transform', `rotate(${-90}, ${0}, ${containerHeight / 2})`)
