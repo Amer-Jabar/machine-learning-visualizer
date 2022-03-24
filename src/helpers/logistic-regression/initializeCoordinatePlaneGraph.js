@@ -2,15 +2,20 @@ import { select, axisBottom, axisLeft, scaleLinear, scaleTime } from 'd3';
 
 export const shifter = 45;
 
+export const mergeData = (algorithmData) => {
+    const mergedData = Array.from({ length: algorithmData.x.length }).map((_, i) => ({
+        x: algorithmData.x[i],
+        y: algorithmData.y[i],
+    }))
+    return mergedData;
+}
+
 const initializeCoordinatePlaneGraph = (algorithmData) => {
 
     const containerWidth = document.querySelector('#coordinates-plane').clientWidth;
     const containerHeight = document.querySelector('#coordinates-plane').clientHeight;
 
-    const mergedData = Array.from({ length: algorithmData.x.length }).map((_, i) => ({
-        x: algorithmData.x[i],
-        y: algorithmData.y[i],
-    }))
+    const mergedData = mergeData(algorithmData);
 
     const minScaleX = Math.min(...algorithmData.x);
     const maxScaleX = Math.max(...algorithmData.x);

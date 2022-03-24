@@ -13,6 +13,7 @@ import clearLossLines from '../../../helpers/logistic-regression/clearLossLines'
 
 import style from './control-plane.module.sass';
 import calculateError from '../../../helpers/linear-regression/calculateError';
+import classifyScatterPlot from '../../../helpers/logistic-regression/classifyScatterPlot';
 
 const EPOCH_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 500, 1000, 10000];
 const LEARNING_RATE = [0.1, 0.01, 0.001, 0.0006, 0.000595, 0.00059, 0.00058, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001];
@@ -60,10 +61,9 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
             onClick={() => {
                 getRandomData()
                 .then(randomData => {
-                    console.log({ coordinatePlaneSvg, lossPlaneSvg, planesAreBlank });
                     if ( coordinatePlaneSvg && !planesAreBlank ) {
                         clearAllGraphs(coordinatePlaneSvg, lossPlaneSvg, {
-                            circle: false, line: true, g: true, lossLine: true, lossAxis: true
+                            circle: false, line: true, g: true, lossLine: true,
                         });
                         setIterations(0);
                         setParentsAlgorithmData(BASE_ALGORITHM_DATA);
@@ -197,11 +197,12 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
             onClick={() => {
                 executeAlgorithm(algorithmData, setAlgorithmData)
                 .then(newAlgorithmData => {
-                        const lossLineDimensions = calculateLossLine(newAlgorithmData, iterations);
-                        if ( lossLineDimensions ) {
-                            clearLossLines(lossPlaneSvg);
-                            drawLossLine(lossLineDimensions)
-                        }
+                    const lossLineDimensions = calculateLossLine(newAlgorithmData, iterations);
+                    if ( lossLineDimensions ) {
+                        clearLossLines(lossPlaneSvg);
+                        drawLossLine(lossLineDimensions)
+                    }
+                    classifyScatterPlot(coordinatePlaneSvg, algorithmData);
 
                     setIterations(iterations + (algorithmData.epochs || 1));
                     setAlgorithmData(newAlgorithmData);
