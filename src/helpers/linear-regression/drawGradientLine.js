@@ -16,7 +16,7 @@ export const scaleNumbers = (list, rMin, rMax, tMin, tMax) => {
     return scaledList;
 }
 
-const drawGradientLine = (gradientHistory, minHistoryX, maxHistoryX, maxHistoryY) => {
+const drawGradientLine = (gradientHistory, minHistoryX, maxHistoryX, maxHistoryY, gradientPlaneSvg) => {
     if ( gradientHistory.length < 1 ) return;
     
     const containerWidth = document.querySelector('#gradient-plane').clientWidth;
@@ -24,8 +24,6 @@ const drawGradientLine = (gradientHistory, minHistoryX, maxHistoryX, maxHistoryY
 
     gradientHistory = scaleNumbers(gradientHistory, minHistoryX, maxHistoryX, shifter, containerWidth);
     const gradientLocalShifter = shifter + (shifter / 2);
-
-    const gradientPlaneSvg = select('#gradient-plane-svg');
 
     gradientPlaneSvg
         .selectAll('.gradient-plane-svg-line')
