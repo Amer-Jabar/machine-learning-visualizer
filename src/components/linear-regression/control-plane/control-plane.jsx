@@ -266,6 +266,11 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                             setAlgorithmData(algorithmDataClone);
                             setParentsAlgorithmData(algorithmDataClone);
                             
+                            clearAllGraphs(null, gradientPlaneSvg, {
+                                gradientG: true,
+                                gradientLabels: true,
+                                gradientLine: true
+                            })
                             const { minHistoryX, maxHistoryX, maxHistoryY } = initializeGradientGraph(algorithmDataClone, {
                                 alterMinHistoryX: null,
                                 alterMaxHistoryX: null,
