@@ -31,6 +31,10 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
     const [lossPlaneSvg, setLossPlaneSvg] = useState(null);
     const [iterations, setIterations] = useState(0);
     const [planesAreBlank, setPlanesAreBlank] = useState(true);
+    const [classColors, setClassColors] = useState({
+        classA: 'green',
+        classB: 'yellow',
+    })
     let allDataExists = algorithmData.x && algorithmData.y && algorithmData.eta && algorithmData.w1 !== null && algorithmData.w0 !== null;
 
     useEffect(() => {
@@ -167,6 +171,26 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                     { ERROR_LIMITS.map((error, index) => <option value={error} key={index}>{error}</option>) }
                 </select>
             </div>
+            <div className={style['control-plane-coeff-container']}>
+                <label>Class 1: </label>
+                <input
+                type="color"
+                className={style['control-plane-color-selector']}
+                onChange={e => setClassColors({
+                    ...classColors,
+                    classA: e.target.value
+                })}/>
+            </div>
+            <div className={style['control-plane-coeff-container']}>
+                <label>Class 2: </label>
+                <input
+                type="color"
+                className={style['control-plane-color-selector']}
+                onChange={e => setClassColors({
+                    ...classColors,
+                    classB: e.target.value
+                })}/>
+            </div>
             <button
             disabled={ !allDataExists }
             style={
@@ -185,8 +209,7 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                         clearLossLines(lossPlaneSvg);
                         drawLossLine(lossLineDimensions)
                     }
-                    console.log(newAlgorithmData);
-                    classifyScatterPlot(coordinatePlaneSvg, newAlgorithmData, false);
+                    classifyScatterPlot(coordinatePlaneSvg, newAlgorithmData, classColors);
 
                     setIterations(iterations + 1);
                     setAlgorithmData(newAlgorithmData);
@@ -218,7 +241,7 @@ const ControlPlane = ({ setAlgorithmData: setParentsAlgorithmData }) => {
                                 clearLossLines(localLossPlaneSvg);
                                 drawLossLine(lossLineDimensions)
                             }
-                            classifyScatterPlot(coordinatePlaneSvg, algorithmDataClone, true);
+                            classifyScatterPlot(coordinatePlaneSvg, algorithmDataClone, classColors);
 
                             setIterations(iterationsClone);
                             setAlgorithmData(algorithmDataClone);

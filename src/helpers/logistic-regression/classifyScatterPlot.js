@@ -3,7 +3,7 @@ import { scaleNumber } from "./drawLossLine";
 import { mergeData, shifter } from "./initializeCoordinatePlaneGraph";
 import { circleDiameter } from "./scatterPlot";
 
-const classifyScatterPlot = (coordinatePlaneSvg, algorithmData, continuous) => {
+const classifyScatterPlot = (coordinatePlaneSvg, algorithmData, classColors) => {
     if ( !algorithmData.pred ) return;
 
     const mergedData = mergeData(algorithmData, true);
@@ -20,7 +20,7 @@ const classifyScatterPlot = (coordinatePlaneSvg, algorithmData, continuous) => {
     coordinatePlaneSvg
         .selectAll('circle')
         .data(mergedData)
-        .attr('fill', (d, i) => d.y >= middle ? 'yellow' : 'green')
+        .attr('fill', (d, i) => d.y >= middle ? classColors.classA : classColors.classB)
         .attr('cx', d => `${scaleNumber(d.x, minScaleX, maxScaleX, shifter + circleDiameter, containerWidth - shifter - circleDiameter)}px`)
         .attr('cy', d => `${scaleNumber(d.y, 0, max, containerHeight - shifter - circleDiameter, shifter + circleDiameter)}px`)
 }
