@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-export const API = 'http://127.0.0.1:8000';
+export const API = 'https://machine-learning-visualizer.azurewebsites.net';
 
 ReactDOM.render(
   <React.StrictMode>
