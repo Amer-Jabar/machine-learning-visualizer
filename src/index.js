@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-export const API = 'https://machine-learning-visualizer.azurewebsites.net';
+export const API = 'https://machinelearningvisualization.herokuapp.com';
 
 ReactDOM.render(
   <React.StrictMode>
